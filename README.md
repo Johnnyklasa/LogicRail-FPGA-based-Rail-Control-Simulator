@@ -9,3 +9,9 @@ Sprzętowy Kontroler VGA: Zaimplementowany w SystemVerilogu moduł generujący s
 
 Custom I/O & Interfejs Dyspozytora: Zamiast standardowej aplikacji okienkowej, system przyjmuje sygnały sterujące z dedykowanego pulpitu (stworzonego na PCB/płytce stykowej) oraz zewnętrznej myszy sprzętowej (protokół PS/2 / USB HID), pozwalając na interakcję z symulacją w czasie rzeczywistym.
 
+Ważne informacje
+Aby zaktualizować projekt po dodania np. modułu potrzebne jest zaktualizowanie skryptu   build.tcl Robimy to poprzez wpisanie
+'''bash
+write_project_tcl -force build.tcl
+'''
+w tcl console w Vivado. Za pomoca komendy cd wejdz do folderu projektu (LogicRail-FPGA.....) aby nadpisać istniejacy już plik.
