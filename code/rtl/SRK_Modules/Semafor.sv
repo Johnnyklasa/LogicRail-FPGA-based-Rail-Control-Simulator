@@ -43,7 +43,7 @@ always_comb begin
         ORANGE_S5: OutSignal = 2'h2;
         GREEN_S2 : OutSignal = 2'h3;
         OFF: OutSignal = 2'h0;
-        default state_nxt = OFF;
+        default : state_nxt = OFF;
     endcase
 
     if (MouseClick) begin
