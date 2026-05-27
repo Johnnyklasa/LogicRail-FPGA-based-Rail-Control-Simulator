@@ -50,9 +50,9 @@ always_comb begin
         vga_nxt.rgb = 12'h0_0_0;                        
     end
 
-    else if (DrawRect(vga_in.hcount, vga_in.vcount, Semafor1XPos ,Semafor1Ypos, SemaforWidth, SemaforHeight)) begin
+    else if (DrawRect(vga_in.hcount, vga_in.vcount, Semafor1XPos ,Semafor1YPos, SemaforWidth, SemaforHeight)) begin
         vga_nxt.rgb = 12'h8_8_8;
-        if (DrawCircle(vga_in.hcount, vga_in.hcount,Semafor1XPos+SemaforWidth/2,  Semafor1Ypos + 10, LedDiameter))begin
+        if (DrawCircle(vga_in.hcount, vga_in.vcount,Semafor1XPos+SemaforWidth/2,  Semafor1YPos + 10, LedDiameter))begin
             case (signal) 
                 2'h1: vga_nxt.rgb = 12'hF_0_0;
                 2'h2: vga_nxt.rgb = 12'h0_F_0;
