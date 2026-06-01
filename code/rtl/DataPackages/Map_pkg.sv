@@ -4,26 +4,23 @@ package Map_pkg;
     localparam Semafor1XPos = 250;
     localparam Semafor1YPos = 250;
 
-    // --- SIGNIFICANTLY REDUCED X-AXIS DIMENSIONS (More space for turnouts) ---
+    // --- SIGNIFICANTLY REDUCED X-AXIS DIMENSIONS 
     localparam PERON_WIDTH  = 220; 
     localparam PERON_HEIGHT = 20;  
     localparam TOR_WIDTH    = 240; 
     localparam TOR_HEIGHT   = 8;   
 
-    localparam TOR_SZLAK_WIDTH = 80; // Shorter entry tracks
+    localparam TOR_SZLAK_WIDTH = 80; // entry tracks
 
-    // --- HORIZONTAL COORDINATES (X) ---
-    // The station occupies only 240px in the center, leaving 280px per side for turnout zones!
+    // --- HORIZONTAL COORDINATES (X) 
     localparam START_X_PERONY = 290; 
     localparam START_X_STACJA = 280; 
 
     localparam START_X_LEWY_SZLAK  = 0; 
-    localparam START_X_PRAWY_SZLAK = 800 - TOR_SZLAK_WIDTH; // X=720
+    localparam START_X_PRAWY_SZLAK = 800 - TOR_SZLAK_WIDTH; 
 
-    // --- VERTICAL COORDINATES (Y) ---
-    // Screen center is at Y=300. 
-    // Track-Platform clearance: exactly 10px. Spacing between groups: exactly 30px.
-
+    // --- VERTICAL COORDINATES (Y) 
+    
     // UPPER SECTION (Group 1)
     localparam Y_TOR1   = 186;
     localparam Y_PERON1 = 204;
