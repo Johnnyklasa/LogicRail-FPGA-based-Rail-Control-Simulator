@@ -55,8 +55,8 @@ module vga_timing (
             hcount_nxt = hcount + 1;
         end
     
-        //hsync_nxt = (hcount_nxt >= HOR_SYNC_START) && (hcount_nxt < HOR_SYNC_START + HOR_SYNC_TIME);
-        //vsync_nxt = (vcount_nxt >= VER_SYNC_START) && (vcount_nxt < VER_SYNC_START + VER_SYNC_TIME);
+        hsync_nxt = (hcount_nxt >= HOR_SYNC_START) && (hcount_nxt < HOR_SYNC_START + HOR_SYNC_TIME);
+        vsync_nxt = (vcount_nxt >= VER_SYNC_START) && (vcount_nxt < VER_SYNC_START + VER_SYNC_TIME);
         hsync_nxt = (hcount >= HOR_SYNC_START - 1) && (hcount < (HOR_SYNC_START - 1) + HOR_SYNC_TIME);
         vsync_nxt = (vcount >= VER_SYNC_START - 1) && (vcount < (VER_SYNC_START - 1) + VER_SYNC_TIME);
     

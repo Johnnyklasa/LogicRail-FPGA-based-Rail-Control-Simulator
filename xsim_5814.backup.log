@@ -1,0 +1,23 @@
+#-----------------------------------------------------------
+# xsim v2021.2 (64-bit)
+# SW Build 3367213 on Tue Oct 19 02:47:39 MDT 2021
+# IP Build 3369179 on Thu Oct 21 08:25:16 MDT 2021
+# Start of session at: Mon Jun  1 16:01:10 2026
+# Process ID: 5814
+# Current directory: /home/student/ksitko/vga/projekt/LogicRail-FPGA-based-Rail-Control-Simulator
+# Command line: xsim -mode tcl -source {xsim.dir/TopVgaTB_snapshot/xsim_script.tcl}
+# Log file: /home/student/ksitko/vga/projekt/LogicRail-FPGA-based-Rail-Control-Simulator/xsim.log
+# Journal file: /home/student/ksitko/vga/projekt/LogicRail-FPGA-based-Rail-Control-Simulator/xsim.jou
+# Running On: cadence22, OS: Linux, CPU Frequency: 3240.234 MHz, CPU Physical cores: 4, Host memory: 16720 MB
+#-----------------------------------------------------------
+source xsim.dir/TopVgaTB_snapshot/xsim_script.tcl
+# xsim {TopVgaTB_snapshot} -autoloadwcfg -runall
+Time resolution is 1 ps
+run -all
+Plik PPM otwarty poprawnie. Trwa generowanie klatki...
+Sukces! Plik zapisany. Koniec symulacji.
+$finish called at time : 15840187500 ps : File "/home/student/ksitko/vga/projekt/LogicRail-FPGA-based-Rail-Control-Simulator/code/sim/TopVgaTB.sv" Line 62
+run: Time (s): cpu = 00:00:00.80 ; elapsed = 00:00:17 . Memory (MB): peak = 2823.984 ; gain = 0.000 ; free physical = 3735 ; free virtual = 18574
+exit
+INFO: xsimkernel Simulation Memory Usage: 133568 KB (Peak: 182380 KB), Simulation CPU Usage: 16530 ms
+INFO: [Common 17-206] Exiting xsim at Mon Jun  1 16:01:33 2026...

@@ -2,9 +2,9 @@
 package SRK_pkg;
 
 //parameters
-localparam SemaforWidth = 16;
-localparam SemaforHeight = 50;
-localparam LedDiameter = 10;
+localparam SemaforWidth = 44;
+localparam SemaforHeight = 12;
+localparam LedDiameter = 8;
 
 
 

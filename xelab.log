@@ -1,0 +1,27 @@
+Vivado Simulator v2021.2
+Copyright 1986-1999, 2001-2021 Xilinx, Inc. All Rights Reserved.
+Running: /home_local/Xilinx/Vivado/2021.2/bin/unwrapped/lnx64.o/xelab -debug typical -timescale 1ns/1ps -top TopVgaTB -snapshot TopVgaTB_snapshot 
+Multi-threading is on. Using 6 slave threads.
+Starting static elaboration
+Pass Through NonSizing Optimizer
+Completed static elaboration
+Starting simulation data flow analysis
+Completed simulation data flow analysis
+Time Resolution for simulation is 1ps
+Compiling package std.standard
+Compiling package std.textio
+Compiling package ieee.std_logic_1164
+Compiling package ieee.std_logic_arith
+Compiling package ieee.std_logic_unsigned
+Compiling package work.vga_pkg
+Compiling package work.SRK_pkg
+Compiling package work.Map_pkg
+Compiling module work.vga_if
+Compiling module work.vga_timing
+Compiling module work.DrawMap
+Compiling module work.DrawSemafor
+Compiling architecture behavioral of entity work.MouseDisplay [mousedisplay_default]
+Compiling module work.DrawMouse
+Compiling module work.TopVga
+Compiling module work.TopVgaTB
+Built simulation snapshot TopVgaTB_snapshot

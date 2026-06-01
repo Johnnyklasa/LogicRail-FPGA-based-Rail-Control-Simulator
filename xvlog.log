@@ -1,0 +1,16 @@
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "/home/student/ksitko/vga/projekt/LogicRail-FPGA-based-Rail-Control-Simulator/code/rtl/DataPackages/vga_pkg.sv" into library work
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "/home/student/ksitko/vga/projekt/LogicRail-FPGA-based-Rail-Control-Simulator/code/rtl/DataPackages/SRK_pkg.sv" into library work
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "/home/student/ksitko/vga/projekt/LogicRail-FPGA-based-Rail-Control-Simulator/code/rtl/DataPackages/Map_pkg.sv" into library work
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "/home/student/ksitko/vga/projekt/LogicRail-FPGA-based-Rail-Control-Simulator/code/rtl/vga/vga_if.sv" into library work
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "/home/student/ksitko/vga/projekt/LogicRail-FPGA-based-Rail-Control-Simulator/code/rtl/vga/VgaTiming.sv" into library work
+INFO: [VRFC 10-311] analyzing module vga_timing
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "/home/student/ksitko/vga/projekt/LogicRail-FPGA-based-Rail-Control-Simulator/code/rtl/vga/DrawMap.sv" into library work
+INFO: [VRFC 10-311] analyzing module DrawMap
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "/home/student/ksitko/vga/projekt/LogicRail-FPGA-based-Rail-Control-Simulator/code/rtl/vga/DrawSemafor.sv" into library work
+INFO: [VRFC 10-311] analyzing module DrawSemafor
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "/home/student/ksitko/vga/projekt/LogicRail-FPGA-based-Rail-Control-Simulator/code/rtl/vga/DrawMouse.sv" into library work
+INFO: [VRFC 10-311] analyzing module DrawMouse
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "/home/student/ksitko/vga/projekt/LogicRail-FPGA-based-Rail-Control-Simulator/code/rtl/vga/TopVga.sv" into library work
+INFO: [VRFC 10-311] analyzing module TopVga
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "/home/student/ksitko/vga/projekt/LogicRail-FPGA-based-Rail-Control-Simulator/code/sim/TopVgaTB.sv" into library work
+INFO: [VRFC 10-311] analyzing module TopVgaTB
