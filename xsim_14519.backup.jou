@@ -2,13 +2,13 @@
 # xsim v2021.2 (64-bit)
 # SW Build 3367213 on Tue Oct 19 02:47:39 MDT 2021
 # IP Build 3369179 on Thu Oct 21 08:25:16 MDT 2021
-# Start of session at: Mon Jun  1 14:25:35 2026
-# Process ID: 7463
+# Start of session at: Mon Jun  8 21:27:40 2026
+# Process ID: 14519
 # Current directory: /home/student/ksitko/vga/projekt/LogicRail-FPGA-based-Rail-Control-Simulator
-# Command line: xsim -mode tcl -source {xsim.dir/TopVgaTB_snapshot/xsim_script.tcl}
+# Command line: xsim -mode tcl -source {xsim.dir/top_fpga_tb_snapshot/xsim_script.tcl}
 # Log file: /home/student/ksitko/vga/projekt/LogicRail-FPGA-based-Rail-Control-Simulator/xsim.log
 # Journal file: /home/student/ksitko/vga/projekt/LogicRail-FPGA-based-Rail-Control-Simulator/xsim.jou
-# Running On: cadence36, OS: Linux, CPU Frequency: 3252.343 MHz, CPU Physical cores: 4, Host memory: 16720 MB
+# Running On: cadence22, OS: Linux, CPU Frequency: 3677.734 MHz, CPU Physical cores: 4, Host memory: 16720 MB
 #-----------------------------------------------------------
-source xsim.dir/TopVgaTB_snapshot/xsim_script.tcl
+source xsim.dir/top_fpga_tb_snapshot/xsim_script.tcl
 run -all

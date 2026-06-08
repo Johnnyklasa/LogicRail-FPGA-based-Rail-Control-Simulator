@@ -2,13 +2,20 @@
 # xsim v2021.2 (64-bit)
 # SW Build 3367213 on Tue Oct 19 02:47:39 MDT 2021
 # IP Build 3369179 on Thu Oct 21 08:25:16 MDT 2021
-# Start of session at: Mon Jun  1 17:35:41 2026
-# Process ID: 5492
+# Start of session at: Mon Jun  8 21:32:25 2026
+# Process ID: 17640
 # Current directory: /home/student/ksitko/vga/projekt/LogicRail-FPGA-based-Rail-Control-Simulator
-# Command line: xsim -mode tcl -source {xsim.dir/TopVgaTB_snapshot/xsim_script.tcl}
+# Command line: xsim -source {xsim.dir/top_fpga_tb_snapshot/xsim_script.tcl}
 # Log file: /home/student/ksitko/vga/projekt/LogicRail-FPGA-based-Rail-Control-Simulator/xsim.log
 # Journal file: /home/student/ksitko/vga/projekt/LogicRail-FPGA-based-Rail-Control-Simulator/xsim.jou
-# Running On: cadence22, OS: Linux, CPU Frequency: 3261.914 MHz, CPU Physical cores: 4, Host memory: 16720 MB
+# Running On: cadence22, OS: Linux, CPU Frequency: 3706.445 MHz, CPU Physical cores: 4, Host memory: 16720 MB
 #-----------------------------------------------------------
-source xsim.dir/TopVgaTB_snapshot/xsim_script.tcl
-run -all
+start_gui
+source xsim.dir/top_fpga_tb_snapshot/xsim_script.tcl
+run all
+create_wave_config; add_wave /; set_property needs_save false [current_wave_config]
+run all
+run 80us
+run 80 us
+run 80 us
+close_sim

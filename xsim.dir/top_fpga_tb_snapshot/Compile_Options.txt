@@ -1,0 +1,1 @@
+-debug "typical" -timescale "1ns/1ps" -top "top_fpga_tb" -snapshot "top_fpga_tb_snapshot" 

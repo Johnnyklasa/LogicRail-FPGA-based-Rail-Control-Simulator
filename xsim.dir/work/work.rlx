@@ -16,6 +16,7 @@ Oct 19 2021
 /home/student/ksitko/vga/projekt/LogicRail-FPGA-based-Rail-Control-Simulator/code/rtl/vga/TopVga.sv,1780329585,systemVerilog,,/home/student/ksitko/vga/projekt/LogicRail-FPGA-based-Rail-Control-Simulator/code/sim/TopVgaTB.sv,,TopVga,,,,,,,,
 /home/student/ksitko/vga/projekt/LogicRail-FPGA-based-Rail-Control-Simulator/code/rtl/vga/VgaTiming.sv,1780161198,systemVerilog,,/home/student/ksitko/vga/projekt/LogicRail-FPGA-based-Rail-Control-Simulator/code/rtl/vga/DrawMap.sv,,vga_timing,,,,,,,,
 /home/student/ksitko/vga/projekt/LogicRail-FPGA-based-Rail-Control-Simulator/code/rtl/vga/vga_if.sv,1780155784,systemVerilog,,/home/student/ksitko/vga/projekt/LogicRail-FPGA-based-Rail-Control-Simulator/code/rtl/vga/VgaTiming.sv,,vga_if,,,,,,,,
-/home/student/ksitko/vga/projekt/LogicRail-FPGA-based-Rail-Control-Simulator/code/sim/ClickDetectorTB.sv,1780155784,systemVerilog,,,,ClickDetectorTB,,,,,,,,
+/home/student/ksitko/vga/projekt/LogicRail-FPGA-based-Rail-Control-Simulator/code/sim/ClickDetectorTB.sv,1780944955,systemVerilog,,,,ClickDetectorTB,,,,,,,,
 /home/student/ksitko/vga/projekt/LogicRail-FPGA-based-Rail-Control-Simulator/code/sim/SemaforTB.sv,1780155784,systemVerilog,,,,SemaforTB,,,,,,,,
 /home/student/ksitko/vga/projekt/LogicRail-FPGA-based-Rail-Control-Simulator/code/sim/TopVgaTB.sv,1780327507,systemVerilog,,,,TopVgaTB,,,,,,,,
+/home/student/ksitko/vga/projekt/LogicRail-FPGA-based-Rail-Control-Simulator/code/sim/top_fpga_tb.sv,1780948364,systemVerilog,,,,clk_wiz_0;top_fpga_tb,,,,,,,,
