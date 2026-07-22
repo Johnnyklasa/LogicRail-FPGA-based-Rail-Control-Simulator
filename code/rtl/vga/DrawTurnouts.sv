@@ -25,44 +25,45 @@ module DrawTurnouts (
     always_comb begin
         vga_nxt.vcount = vga_in.vcount; vga_nxt.hcount = vga_in.hcount; vga_nxt.vsync = vga_in.vsync; vga_nxt.hsync = vga_in.hsync; vga_nxt.vblnk = vga_in.vblnk; vga_nxt.hblnk = vga_in.hblnk; vga_nxt.rgb = vga_in.rgb; 
 
+        
         d_L1 = 1'b0;
         case (route_L1)
-            3'd1: d_L1 = IsLine(vga_in.hcount, vga_in.vcount, 80, 272, 200, -86, TOR_HEIGHT);
-            3'd2: d_L1 = IsLine(vga_in.hcount, vga_in.vcount, 80, 272, 200, -38, TOR_HEIGHT);
-            3'd3: d_L1 = IsLine(vga_in.hcount, vga_in.vcount, 80, 272, 200, 0,   TOR_HEIGHT);
-            3'd4: d_L1 = IsLine(vga_in.hcount, vga_in.vcount, 80, 272, 200, 48,  TOR_HEIGHT);
-            3'd5: d_L1 = IsLine(vga_in.hcount, vga_in.vcount, 80, 272, 200, 86,  TOR_HEIGHT);
-            3'd6: d_L1 = IsLine(vga_in.hcount, vga_in.vcount, 80, 272, 200, 134, TOR_HEIGHT);
+            3'd1: d_L1 = IsLine(vga_in.hcount, vga_in.vcount, 80, Y_TOR3, 200, Y_TOR1 - Y_TOR3, TOR_HEIGHT);
+            3'd2: d_L1 = IsLine(vga_in.hcount, vga_in.vcount, 80, Y_TOR3, 200, Y_TOR2 - Y_TOR3, TOR_HEIGHT);
+            3'd3: d_L1 = IsLine(vga_in.hcount, vga_in.vcount, 80, Y_TOR3, 200, Y_TOR3 - Y_TOR3, TOR_HEIGHT);
+            3'd4: d_L1 = IsLine(vga_in.hcount, vga_in.vcount, 80, Y_TOR3, 200, Y_TOR4 - Y_TOR3, TOR_HEIGHT);
+            3'd5: d_L1 = IsLine(vga_in.hcount, vga_in.vcount, 80, Y_TOR3, 200, Y_TOR5 - Y_TOR3, TOR_HEIGHT);
+            3'd6: d_L1 = IsLine(vga_in.hcount, vga_in.vcount, 80, Y_TOR3, 200, Y_TOR6 - Y_TOR3, TOR_HEIGHT);
         endcase
 
         d_L2 = 1'b0;
         case (route_L2)
-            3'd1: d_L2 = IsLine(vga_in.hcount, vga_in.vcount, 80, 320, 200, -134, TOR_HEIGHT);
-            3'd2: d_L2 = IsLine(vga_in.hcount, vga_in.vcount, 80, 320, 200, -86,  TOR_HEIGHT);
-            3'd3: d_L2 = IsLine(vga_in.hcount, vga_in.vcount, 80, 320, 200, -48,  TOR_HEIGHT);
-            3'd4: d_L2 = IsLine(vga_in.hcount, vga_in.vcount, 80, 320, 200, 0,    TOR_HEIGHT);
-            3'd5: d_L2 = IsLine(vga_in.hcount, vga_in.vcount, 80, 320, 200, 38,   TOR_HEIGHT);
-            3'd6: d_L2 = IsLine(vga_in.hcount, vga_in.vcount, 80, 320, 200, 86,   TOR_HEIGHT);
+            3'd1: d_L2 = IsLine(vga_in.hcount, vga_in.vcount, 80, Y_TOR4, 200, Y_TOR1 - Y_TOR4, TOR_HEIGHT);
+            3'd2: d_L2 = IsLine(vga_in.hcount, vga_in.vcount, 80, Y_TOR4, 200, Y_TOR2 - Y_TOR4, TOR_HEIGHT);
+            3'd3: d_L2 = IsLine(vga_in.hcount, vga_in.vcount, 80, Y_TOR4, 200, Y_TOR3 - Y_TOR4, TOR_HEIGHT);
+            3'd4: d_L2 = IsLine(vga_in.hcount, vga_in.vcount, 80, Y_TOR4, 200, Y_TOR4 - Y_TOR4, TOR_HEIGHT);
+            3'd5: d_L2 = IsLine(vga_in.hcount, vga_in.vcount, 80, Y_TOR4, 200, Y_TOR5 - Y_TOR4, TOR_HEIGHT);
+            3'd6: d_L2 = IsLine(vga_in.hcount, vga_in.vcount, 80, Y_TOR4, 200, Y_TOR6 - Y_TOR4, TOR_HEIGHT);
         endcase
 
         d_P1 = 1'b0;
         case (route_P1)
-            3'd1: d_P1 = IsLine(vga_in.hcount, vga_in.vcount, 520, 186, 200, 86,   TOR_HEIGHT);
-            3'd2: d_P1 = IsLine(vga_in.hcount, vga_in.vcount, 520, 234, 200, 38,   TOR_HEIGHT);
-            3'd3: d_P1 = IsLine(vga_in.hcount, vga_in.vcount, 520, 272, 200, 0,    TOR_HEIGHT);
-            3'd4: d_P1 = IsLine(vga_in.hcount, vga_in.vcount, 520, 320, 200, -48,  TOR_HEIGHT);
-            3'd5: d_P1 = IsLine(vga_in.hcount, vga_in.vcount, 520, 358, 200, -86,  TOR_HEIGHT);
-            3'd6: d_P1 = IsLine(vga_in.hcount, vga_in.vcount, 520, 406, 200, -134, TOR_HEIGHT);
+            3'd1: d_P1 = IsLine(vga_in.hcount, vga_in.vcount, 520, Y_TOR1, 200, Y_TOR3 - Y_TOR1, TOR_HEIGHT);
+            3'd2: d_P1 = IsLine(vga_in.hcount, vga_in.vcount, 520, Y_TOR2, 200, Y_TOR3 - Y_TOR2, TOR_HEIGHT);
+            3'd3: d_P1 = IsLine(vga_in.hcount, vga_in.vcount, 520, Y_TOR3, 200, Y_TOR3 - Y_TOR3, TOR_HEIGHT);
+            3'd4: d_P1 = IsLine(vga_in.hcount, vga_in.vcount, 520, Y_TOR4, 200, Y_TOR3 - Y_TOR4, TOR_HEIGHT);
+            3'd5: d_P1 = IsLine(vga_in.hcount, vga_in.vcount, 520, Y_TOR5, 200, Y_TOR3 - Y_TOR5, TOR_HEIGHT);
+            3'd6: d_P1 = IsLine(vga_in.hcount, vga_in.vcount, 520, Y_TOR6, 200, Y_TOR3 - Y_TOR6, TOR_HEIGHT);
         endcase
 
         d_P2 = 1'b0;
         case (route_P2)
-            3'd1: d_P2 = IsLine(vga_in.hcount, vga_in.vcount, 520, 186, 200, 134,  TOR_HEIGHT);
-            3'd2: d_P2 = IsLine(vga_in.hcount, vga_in.vcount, 520, 234, 200, 86,   TOR_HEIGHT);
-            3'd3: d_P2 = IsLine(vga_in.hcount, vga_in.vcount, 520, 272, 200, 48,   TOR_HEIGHT);
-            3'd4: d_P2 = IsLine(vga_in.hcount, vga_in.vcount, 520, 320, 200, 0,    TOR_HEIGHT);
-            3'd5: d_P2 = IsLine(vga_in.hcount, vga_in.vcount, 520, 358, 200, -38,  TOR_HEIGHT);
-            3'd6: d_P2 = IsLine(vga_in.hcount, vga_in.vcount, 520, 406, 200, -86,  TOR_HEIGHT);
+            3'd1: d_P2 = IsLine(vga_in.hcount, vga_in.vcount, 520, Y_TOR1, 200, Y_TOR4 - Y_TOR1, TOR_HEIGHT);
+            3'd2: d_P2 = IsLine(vga_in.hcount, vga_in.vcount, 520, Y_TOR2, 200, Y_TOR4 - Y_TOR2, TOR_HEIGHT);
+            3'd3: d_P2 = IsLine(vga_in.hcount, vga_in.vcount, 520, Y_TOR3, 200, Y_TOR4 - Y_TOR3, TOR_HEIGHT);
+            3'd4: d_P2 = IsLine(vga_in.hcount, vga_in.vcount, 520, Y_TOR4, 200, Y_TOR4 - Y_TOR4, TOR_HEIGHT);
+            3'd5: d_P2 = IsLine(vga_in.hcount, vga_in.vcount, 520, Y_TOR5, 200, Y_TOR4 - Y_TOR5, TOR_HEIGHT);
+            3'd6: d_P2 = IsLine(vga_in.hcount, vga_in.vcount, 520, Y_TOR6, 200, Y_TOR4 - Y_TOR6, TOR_HEIGHT);
         endcase
 
         active_L1 = (route_L1 != 0) && (select_L_upper == 1'b1);
