@@ -1,6 +1,6 @@
 module vga_timing (
         input  logic clk,
-        input  logic rst,
+        input  logic rst_n,
         output logic [10:0] vcount,
         output logic vsync,
         output logic vblnk,
@@ -18,8 +18,8 @@ module vga_timing (
     logic vsync_nxt, vblnk_nxt, hsync_nxt, hblnk_nxt;
     
     
-    always_ff @(posedge clk) begin
-        if (rst) begin
+    always_ff @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
             hcount <= 11'b0;
             vcount <= 11'b0;
             hsync <= 1'b0;
