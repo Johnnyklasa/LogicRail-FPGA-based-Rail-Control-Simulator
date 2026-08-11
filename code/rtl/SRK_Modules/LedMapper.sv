@@ -6,9 +6,11 @@ module LedMapper (
         led_data = 48'b0;
 
         // 1. TORY WJAZDOWE LEWE (Q0 - Q5)
+        //Gorne
         led_data[0] = (signals[12] == 2'h2); // Szlak L1 zielony
         led_data[1] = (signals[12] == 2'h1); // Szlak L1 czerwony
         led_data[2] = (signals[12] == 2'h3); // Szlak L1 żółty
+        //Dolne
         led_data[3] = (signals[13] == 2'h2); // Szlak L2 zielony
         led_data[4] = (signals[13] == 2'h1); // Szlak L2 czerwony
         led_data[5] = (signals[13] == 2'h3); // Szlak L2 żółty
@@ -64,9 +66,11 @@ module LedMapper (
         led_data[41] = (signals[11] == 2'h3);
 
         // 4. TORY WJAZDOWE PRAWE (Q42 - Q47)
+        //Gorne
         led_data[42] = (signals[14] == 2'h2); // Szlak P1 zielony
         led_data[43] = (signals[14] == 2'h1); // Szlak P1 czerwony
         led_data[44] = (signals[14] == 2'h3); // Szlak P1 żółty
+        //Dolne
         led_data[45] = (signals[15] == 2'h2); // Szlak P2 zielony
         led_data[46] = (signals[15] == 2'h1); // Szlak P2 czerwony
         led_data[47] = (signals[15] == 2'h3); // Szlak P2 żółty
