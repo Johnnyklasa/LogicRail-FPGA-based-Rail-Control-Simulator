@@ -20,7 +20,6 @@ always_ff @(posedge clk or negedge rst_n) begin
     end
     else if(train_leave)begin
         train_id_stored <= 8'd0;
-        
     end
 
 end

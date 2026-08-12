@@ -14,7 +14,7 @@ module top_vga_basys3 (
     timeunit 1ns;
     timeprecision 1ps;
 
-    // --- Lokalne sygnały ---
+  
     wire clk100MHz, clk65MHz;
     wire locked;
     wire pclk;
@@ -42,20 +42,11 @@ module top_vga_basys3 (
         .R(1'b0),
         .S(1'b0)
     );
-    
-    logic [2:0] dummy_route = 3'b000;
    
     TopVga u_top_vga (
         .clk(pclk),  
         .clk100MHz(clk100MHz),              
-        .rst_n(~btnC),  // Przycisk na Basys3 podaje 1, więc negujemy go dla rst_n
-        
-        .route_L1(dummy_route),
-        .route_L2(dummy_route),
-        .route_P1(dummy_route),
-        .route_P2(dummy_route),
-        .select_L_upper(1'b0),
-        .select_P_upper(1'b0),
+        .rst_n(~btnC),  
         
         .r(vgaRed),
         .g(vgaGreen),

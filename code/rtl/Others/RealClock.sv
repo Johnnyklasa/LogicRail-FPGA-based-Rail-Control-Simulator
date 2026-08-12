@@ -2,13 +2,13 @@ module RealClock(
     input logic clk,
     input logic rst_n,
     output logic [4:0] hours,
-    output logic [5:0] minutes
+    output logic [5:0] minutes,
+    output logic minute_tick
 );
 
 localparam cyclespersecond = 40000000;
 logic [4:0] hours_nxt;
 logic [5:0]minutes_nxt; 
-logic minute_tick;
 int clockcycles;
 
 assign minute_tick = (clockcycles == (cyclespersecond * 20) - 1);

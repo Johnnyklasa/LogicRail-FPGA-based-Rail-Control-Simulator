@@ -1,7 +1,7 @@
 package Timetable_pkg;
 
 typedef struct packed {
-    logic [7:0] TrainNum;
+    logic [7:0] TrainID;
     logic [11:0] ArrivalTime;
     logic [11:0] DepartureTime;
 } Train;
@@ -16,7 +16,6 @@ endpackage
 
 
 
-endpackage
 
 
 

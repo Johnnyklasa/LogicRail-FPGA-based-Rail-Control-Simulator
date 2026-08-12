@@ -14,7 +14,6 @@ module Semafor #(
 
     logic MouseClick;
 
-    // Detekcja zbocza narastającego kliknięcia myszy
     ClickDetector u_ClickDetector(
         .clk(clk),
         .Signal(MouseLeftClick),
@@ -32,7 +31,6 @@ module Semafor #(
     STATE state_nxt;
     STATE state;
 
-    // --- Blok sekwencyjny (Aktualizacja stanu) ---
     always_ff @(posedge clk or negedge rst_n) begin  
         if(!rst_n) begin 
             state <= RED_S1;
@@ -42,13 +40,12 @@ module Semafor #(
         end
     end
          
-    // --- Blok kombinacyjny (Logika przejść i wyjść) ---
     always_comb begin  
-        // Domyślne wartości zapobiegające powstawaniu zatrzasków (latchy)
+       
         state_nxt = state;
         OutSignal = 2'h0; 
 
-        // Przypisanie sygnału wyjściowego na podstawie stanu
+        
         case (state) 
             RED_S1:    OutSignal = 2'h1;
             ORANGE_S5: OutSignal = 2'h2;
@@ -57,7 +54,6 @@ module Semafor #(
             default:   state_nxt = OFF;
         endcase
 
-        // Logika zmiany stanu na kliknięcie w obrębie semafora
         if (MouseClick && 
            (X_POS >= SemaforXPos[SEMAFOR_ID]) && (X_POS <= SemaforXPos[SEMAFOR_ID] + SemaforWidth) &&
            (Y_POS >= SemaforYPos[SEMAFOR_ID]) && (Y_POS <= SemaforYPos[SEMAFOR_ID] + SemaforHeight))

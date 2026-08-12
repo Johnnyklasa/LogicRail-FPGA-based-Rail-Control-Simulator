@@ -2,12 +2,6 @@ module TopVga(
     input logic clk,               
     input logic clk100MHz,         
     input logic rst_n,
-    input logic [2:0] route_L1,
-    input logic [2:0] route_L2,
-    input logic [2:0] route_P1,
-    input logic [2:0] route_P2,
-    input logic select_L_upper,
-    input logic select_P_upper,
     output logic vs,
     output logic hs,
     output logic [3:0] r,
@@ -21,12 +15,20 @@ module TopVga(
     logic [11:0] x_s1, x_s2, y_s1, y_s2;
     logic [3:0] mouse_z;
     logic mouse_left, mouse_middle, mouse_right, mouse_new_event;
+    
     logic [1:0] signals [0:15];
     
-    // Zaślepka dla zajętości torów (ponieważ nie mamy jeszcze FSM i pociągów)
-    // Zależnie od tego, jakiej szerokości oczekuje MapRenderer (np. 10 bitów dla 10 torów), 
-    // podajemy same zera, by tory rysowały się na biało.
+  
+    logic [2:0] turnout_pos [0:3];
+    logic turnout_taken [0:3];
+    
     logic [9:0] isTaken = '0; 
+    logic select_L_upper = 1'b1;
+    logic select_P_upper = 1'b1;
+
+   logic mouse_left_s1, mouse_left_s2;
+    logic mouse_middle_s1, mouse_middle_s2;
+    logic mouse_right_s1, mouse_right_s2;
 
     always_ff @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
@@ -34,14 +36,33 @@ module TopVga(
             x_s2 <= '0;
             y_s1 <= '0;
             y_s2 <= '0;
+            
+           
+            mouse_left_s1 <= 1'b0;
+            mouse_left_s2 <= 1'b0;
+            mouse_middle_s1 <= 1'b0;
+            mouse_middle_s2 <= 1'b0;
+            mouse_right_s1 <= 1'b0;
+            mouse_right_s2 <= 1'b0;
         end else begin
+           
             x_s1 <= x_mouse; 
             x_s2 <= x_s1;
             y_s1 <= y_mouse; 
             y_s2 <= y_s1;
+            
+           
+            mouse_left_s1   <= mouse_left;
+            mouse_left_s2   <= mouse_left_s1;
+            
+            mouse_middle_s1 <= mouse_middle;
+            mouse_middle_s2 <= mouse_middle_s1;
+            
+            mouse_right_s1  <= mouse_right;
+            mouse_right_s2  <= mouse_right_s1;
         end
     end
-
+    
     vga_if vga_tim();
     vga_if vga_map();
     vga_if vga_mouse();
@@ -57,7 +78,7 @@ module TopVga(
         .TIMEOUT_PERIOD_MS(100)
     ) u_MouseCtl (
         .clk(clk100MHz),      
-        .rst(!rst_n), // MouseCtl prawdopodobnie oczekuje resetu aktywnego 1
+        .rst(!rst_n), 
         .xpos(x_mouse),       
         .ypos(y_mouse),       
         .zpos(mouse_z),
@@ -85,47 +106,54 @@ module TopVga(
         .hblnk(vga_tim.hblnk)
     );
 
-    MapRenderer u_MapRenderer (
+   MapRenderer u_MapRenderer (
         .clk(clk), 
         .rst_n(rst_n),
-        .route_L1(route_L1), 
-        .route_L2(route_L2), 
-        .route_P1(route_P1), 
-        .route_P2(route_P2),
+        .route_L1(turnout_pos[0]), 
+        .route_L2(turnout_pos[1]), 
+        .route_P1(turnout_pos[2]), 
+        .route_P2(turnout_pos[3]),
         .select_L_upper(select_L_upper), 
         .select_P_upper(select_P_upper),
         .signals(signals),
-        .isTaken(isTaken), // Tory są na razie puste
+        .isTaken(isTaken),
         .vga_in(vga_tim),
         .vga_out(vga_map)
     );
+
+   
 
     DrawMouse u_DrawMouse(
         .clk(clk),
         .rst_n(rst_n),
         .X_POS(x_s2),        
         .Y_POS(y_s2),        
-        .vga_in(vga_map),
+        .vga_in(vga_map), 
         .vga_out(vga_mouse)
     );
 
-    // --- RĘCZNE INSTANCJE 16 SEMAFORÓW ---
-    // (Brak zmian, wszystkie semafory gotowe na nasłuchiwanie kliknięć)
-    Semafor #(.SEMAFOR_ID(0)) u_Semafor_0 (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left), .X_POS(x_s2), .Y_POS(y_s2), .OutSignal(signals[0]));
-    Semafor #(.SEMAFOR_ID(1)) u_Semafor_1 (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left), .X_POS(x_s2), .Y_POS(y_s2), .OutSignal(signals[1]));
-    Semafor #(.SEMAFOR_ID(2)) u_Semafor_2 (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left), .X_POS(x_s2), .Y_POS(y_s2), .OutSignal(signals[2]));
-    Semafor #(.SEMAFOR_ID(3)) u_Semafor_3 (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left), .X_POS(x_s2), .Y_POS(y_s2), .OutSignal(signals[3]));
-    Semafor #(.SEMAFOR_ID(4)) u_Semafor_4 (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left), .X_POS(x_s2), .Y_POS(y_s2), .OutSignal(signals[4]));
-    Semafor #(.SEMAFOR_ID(5)) u_Semafor_5 (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left), .X_POS(x_s2), .Y_POS(y_s2), .OutSignal(signals[5]));
-    Semafor #(.SEMAFOR_ID(6)) u_Semafor_6 (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left), .X_POS(x_s2), .Y_POS(y_s2), .OutSignal(signals[6]));
-    Semafor #(.SEMAFOR_ID(7)) u_Semafor_7 (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left), .X_POS(x_s2), .Y_POS(y_s2), .OutSignal(signals[7]));
-    Semafor #(.SEMAFOR_ID(8)) u_Semafor_8 (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left), .X_POS(x_s2), .Y_POS(y_s2), .OutSignal(signals[8]));
-    Semafor #(.SEMAFOR_ID(9)) u_Semafor_9 (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left), .X_POS(x_s2), .Y_POS(y_s2), .OutSignal(signals[9]));
-    Semafor #(.SEMAFOR_ID(10)) u_Semafor_10 (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left), .X_POS(x_s2), .Y_POS(y_s2), .OutSignal(signals[10]));
-    Semafor #(.SEMAFOR_ID(11)) u_Semafor_11 (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left), .X_POS(x_s2), .Y_POS(y_s2), .OutSignal(signals[11]));
-    Semafor #(.SEMAFOR_ID(12)) u_Semafor_12 (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left), .X_POS(x_s2), .Y_POS(y_s2), .OutSignal(signals[12]));
-    Semafor #(.SEMAFOR_ID(13)) u_Semafor_13 (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left), .X_POS(x_s2), .Y_POS(y_s2), .OutSignal(signals[13]));
-    Semafor #(.SEMAFOR_ID(14)) u_Semafor_14 (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left), .X_POS(x_s2), .Y_POS(y_s2), .OutSignal(signals[14]));
-    Semafor #(.SEMAFOR_ID(15)) u_Semafor_15 (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left), .X_POS(x_s2), .Y_POS(y_s2), .OutSignal(signals[15]));
+    // --- INSTANCJE 4 ROZJAZDÓW (TURNOUTS) ---
+    Turnout #(.TURNOUT_ID(0)) u_Turnout_L1 (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left_s2), .X_POS(x_s2), .Y_POS(y_s2), .position(turnout_pos[0]), .isTaken(turnout_taken[0]));
+    Turnout #(.TURNOUT_ID(1)) u_Turnout_L2 (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left_s2), .X_POS(x_s2), .Y_POS(y_s2), .position(turnout_pos[1]), .isTaken(turnout_taken[1]));
+    Turnout #(.TURNOUT_ID(2)) u_Turnout_P1 (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left_s2), .X_POS(x_s2), .Y_POS(y_s2), .position(turnout_pos[2]), .isTaken(turnout_taken[2]));
+    Turnout #(.TURNOUT_ID(3)) u_Turnout_P2 (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left_s2), .X_POS(x_s2), .Y_POS(y_s2), .position(turnout_pos[3]), .isTaken(turnout_taken[3]));
+
+    // --- INSTANCJE 16 SEMAFORÓW ---
+    Semafor #(.SEMAFOR_ID(0)) u_Semafor_0 (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left_s2), .X_POS(x_s2), .Y_POS(y_s2), .OutSignal(signals[0]));
+    Semafor #(.SEMAFOR_ID(1)) u_Semafor_1 (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left_s2), .X_POS(x_s2), .Y_POS(y_s2), .OutSignal(signals[1]));
+    Semafor #(.SEMAFOR_ID(2)) u_Semafor_2 (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left_s2), .X_POS(x_s2), .Y_POS(y_s2), .OutSignal(signals[2]));
+    Semafor #(.SEMAFOR_ID(3)) u_Semafor_3 (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left_s2), .X_POS(x_s2), .Y_POS(y_s2), .OutSignal(signals[3]));
+    Semafor #(.SEMAFOR_ID(4)) u_Semafor_4 (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left_s2), .X_POS(x_s2), .Y_POS(y_s2), .OutSignal(signals[4]));
+    Semafor #(.SEMAFOR_ID(5)) u_Semafor_5 (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left_s2), .X_POS(x_s2), .Y_POS(y_s2), .OutSignal(signals[5]));
+    Semafor #(.SEMAFOR_ID(6)) u_Semafor_6 (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left_s2), .X_POS(x_s2), .Y_POS(y_s2), .OutSignal(signals[6]));
+    Semafor #(.SEMAFOR_ID(7)) u_Semafor_7 (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left_s2), .X_POS(x_s2), .Y_POS(y_s2), .OutSignal(signals[7]));
+    Semafor #(.SEMAFOR_ID(8)) u_Semafor_8 (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left_s2), .X_POS(x_s2), .Y_POS(y_s2), .OutSignal(signals[8]));
+    Semafor #(.SEMAFOR_ID(9)) u_Semafor_9 (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left_s2), .X_POS(x_s2), .Y_POS(y_s2), .OutSignal(signals[9]));
+    Semafor #(.SEMAFOR_ID(10)) u_Semafor_10 (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left_s2), .X_POS(x_s2), .Y_POS(y_s2), .OutSignal(signals[10]));
+    Semafor #(.SEMAFOR_ID(11)) u_Semafor_11 (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left_s2), .X_POS(x_s2), .Y_POS(y_s2), .OutSignal(signals[11]));
+    Semafor #(.SEMAFOR_ID(12)) u_Semafor_12 (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left_s2), .X_POS(x_s2), .Y_POS(y_s2), .OutSignal(signals[12]));
+    Semafor #(.SEMAFOR_ID(13)) u_Semafor_13 (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left_s2), .X_POS(x_s2), .Y_POS(y_s2), .OutSignal(signals[13]));
+    Semafor #(.SEMAFOR_ID(14)) u_Semafor_14 (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left_s2), .X_POS(x_s2), .Y_POS(y_s2), .OutSignal(signals[14]));
+    Semafor #(.SEMAFOR_ID(15)) u_Semafor_15 (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left_s2), .X_POS(x_s2), .Y_POS(y_s2), .OutSignal(signals[15]));
 
 endmodule

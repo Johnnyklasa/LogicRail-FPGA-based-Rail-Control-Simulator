@@ -8,6 +8,7 @@ module MapRenderer(
     vga_if.in  vga_in,
     vga_if.out vga_out
 );
+    
     vga_if vga_platforms();
     vga_if vga_internal_tracks();
     vga_if vga_entry_tracks();
@@ -40,7 +41,6 @@ module MapRenderer(
         .vga_in(vga_entry_tracks),
         .vga_out(vga_turnouts)
     );
-    
     
     DrawSemafor u_DrawSemafor (
         .clk(clk), .rst_n(rst_n),
