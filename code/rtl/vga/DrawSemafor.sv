@@ -1,22 +1,92 @@
-
 module DrawSemafor (
     input logic clk,
-    input logic rst,
-
-    input logic [1:0] signal,            
-
+    input logic rst_n,
+    input logic [1:0] signals [0:15],            
     vga_if.in vga_in,
     vga_if.out vga_out
 );
-
-vga_if vga_nxt();
 
 import vga_pkg::*;
 import SRK_pkg::*;
 import Map_pkg::*;
 
-always_ff @(posedge clk ) begin 
-    if (rst) begin 
+vga_if vga_mid();
+vga_if vga_nxt();
+
+int active_sem_id_reg;
+int local_x, local_y;
+
+
+function automatic int GetSemaforID(input int h, input int v);
+    for (int i = 0; i < SEMAFOR_NUMBER; i++) begin
+        if (DrawRect(h, v, SemaforXPos[i], SemaforYPos[i], SemaforWidth, SemaforHeight)) begin
+            return i; 
+        end
+    end
+    return -1; // Brak zderzenia
+endfunction
+
+
+always_ff @(posedge clk or negedge rst_n) begin 
+    if (!rst_n) begin 
+        vga_mid.vcount <= '0;
+        vga_mid.vsync  <= '0;
+        vga_mid.vblnk  <= '0;
+        vga_mid.hcount <= '0;
+        vga_mid.hsync  <= '0;
+        vga_mid.hblnk  <= '0;
+        vga_mid.rgb    <= '0;
+        active_sem_id_reg <= -1;
+    end
+    else begin
+       
+        vga_mid.vcount <= vga_in.vcount;
+        vga_mid.vsync  <= vga_in.vsync;
+        vga_mid.vblnk  <= vga_in.vblnk;
+        vga_mid.hcount <= vga_in.hcount;
+        vga_mid.hsync  <= vga_in.hsync;
+        vga_mid.hblnk  <= vga_in.hblnk;
+        vga_mid.rgb    <= vga_in.rgb;
+        
+    
+        active_sem_id_reg <= GetSemaforID(vga_in.hcount, vga_in.vcount);
+    end
+end
+
+
+always_comb begin 
+ 
+    vga_nxt.vcount = vga_mid.vcount;
+    vga_nxt.hcount = vga_mid.hcount;
+    vga_nxt.vsync  = vga_mid.vsync;
+    vga_nxt.hsync  = vga_mid.hsync;
+    vga_nxt.vblnk  = vga_mid.vblnk;
+    vga_nxt.hblnk  = vga_mid.hblnk;
+    vga_nxt.rgb    = vga_mid.rgb; 
+    
+  
+    if (!vga_mid.vblnk && !vga_mid.hblnk) begin            
+        if (active_sem_id_reg != -1) begin
+            vga_nxt.rgb = 12'h8_8_8;
+            
+            local_x = vga_mid.hcount - SemaforXPos[active_sem_id_reg];
+            local_y = vga_mid.vcount - SemaforYPos[active_sem_id_reg];
+            
+            if (DrawCircle(local_x, local_y, 5, 8, 3)) begin
+                case (signals[active_sem_id_reg]) 
+                    2'h0: vga_nxt.rgb = 12'hF_0_0; // Czerwony
+                    2'h1: vga_nxt.rgb = 12'h0_F_0; // Zielony
+                    2'h2: vga_nxt.rgb = 12'hF_F_0; // Żółty
+                    default: vga_nxt.rgb = 12'h0_0_0;
+                endcase
+            end
+        end
+    end
+end
+
+
+always_ff @(posedge clk or negedge rst_n) begin 
+    if (!rst_n) begin 
         vga_out.vcount <= '0;
         vga_out.vsync  <= '0;
         vga_out.vblnk  <= '0;
@@ -36,31 +106,4 @@ always_ff @(posedge clk ) begin
     end
 end
 
-always_comb begin 
-    vga_nxt.vcount = vga_in.vcount;
-    vga_nxt.hcount = vga_in.hcount;
-    vga_nxt.vsync  = vga_in.vsync;
-    vga_nxt.hsync  = vga_in.hsync;
-    vga_nxt.vblnk  = vga_in.vblnk;
-    vga_nxt.hblnk  = vga_in.hblnk;
-    
-    vga_nxt.rgb    = 12'h0_0_0;
-
-    if (vga_in.vblnk || vga_in.hblnk) begin            
-        vga_nxt.rgb = 12'h0_0_0;                        
-    end
-
-    else if (DrawRect(vga_in.hcount, vga_in.vcount, Semafor1XPos ,Semafor1YPos, SemaforWidth, SemaforHeight)) begin
-        vga_nxt.rgb = 12'h8_8_8;
-        if (DrawCircle(vga_in.hcount, vga_in.vcount,Semafor1XPos+SemaforWidth/2,  Semafor1YPos + 10, LedDiameter))begin
-            case (signal) 
-                2'h1: vga_nxt.rgb = 12'hF_0_0;
-                2'h2: vga_nxt.rgb = 12'h0_F_0;
-                2'h3: vga_nxt.rgb = 12'hF_F_0;
-                2'h0: vga_nxt.rgb = 12'h0_0_0;
-            endcase
-    end
-    
-end
-end
 endmodule

@@ -1,7 +1,7 @@
 
 module DrawMouse (
     input  logic clk,
-    input  logic rst,
+    input  logic rst_n,
     input logic [11:0] X_POS,
     input logic [11:0] Y_POS,
     vga_if.in vga_in,
@@ -33,7 +33,7 @@ MouseDisplay u_Mouse_Display (
 
 
 always_ff @(posedge clk) begin 
-    if (rst) begin
+    if (!rst_n) begin
         vga_out.vcount <= '0;
         vga_out.vsync  <= '0;
         vga_out.vblnk  <= '0;
