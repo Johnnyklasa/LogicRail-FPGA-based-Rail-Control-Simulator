@@ -6,7 +6,8 @@ module RealClock(
     output logic minute_tick
 );
 
-localparam cyclespersecond = 40000000;
+localparam cyclespersecond = 2000000;
+
 logic [4:0] hours_nxt;
 logic [5:0]minutes_nxt; 
 int clockcycles;
@@ -15,7 +16,7 @@ assign minute_tick = (clockcycles == (cyclespersecond * 20) - 1);
 
 always_ff @(posedge clk or  negedge rst_n ) begin
 
-    if(!rst) begin
+    if(!rst_n) begin
         hours <= 1'b0;
         minutes <= 1'b0;
         clockcycles <= 0;

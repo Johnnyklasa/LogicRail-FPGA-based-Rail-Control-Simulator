@@ -1,6 +1,7 @@
 module DrawEntryTracks (
     input logic clk,
     input logic rst_n,
+    input logic [9:0] isTaken,
     vga_if.in  vga_in,
     vga_if.out vga_out
 );
@@ -21,9 +22,13 @@ module DrawEntryTracks (
     always_comb begin
         vga_nxt.vcount = vga_in.vcount; vga_nxt.hcount = vga_in.hcount; vga_nxt.vsync = vga_in.vsync; vga_nxt.hsync = vga_in.hsync; vga_nxt.vblnk = vga_in.vblnk; vga_nxt.hblnk = vga_in.hblnk; vga_nxt.rgb = vga_in.rgb; 
 
-        if (DrawTrack(vga_in.hcount, vga_in.vcount, START_X_LEWY_SZLAK, Y_SZLAK_L1, TOR_SZLAK_WIDTH, TOR_HEIGHT)) vga_nxt.rgb = 12'hFFF;
-        else if (DrawTrack(vga_in.hcount, vga_in.vcount, START_X_LEWY_SZLAK, Y_SZLAK_L2, TOR_SZLAK_WIDTH, TOR_HEIGHT)) vga_nxt.rgb = 12'hFFF;
-        else if (DrawTrack(vga_in.hcount, vga_in.vcount, START_X_PRAWY_SZLAK, Y_SZLAK_P1, TOR_SZLAK_WIDTH, TOR_HEIGHT)) vga_nxt.rgb = 12'hFFF;
-        else if (DrawTrack(vga_in.hcount, vga_in.vcount, START_X_PRAWY_SZLAK, Y_SZLAK_P2, TOR_SZLAK_WIDTH, TOR_HEIGHT)) vga_nxt.rgb = 12'hFFF;
+        if (DrawTrack(vga_in.hcount, vga_in.vcount, START_X_LEWY_SZLAK, Y_SZLAK_L1, TOR_SZLAK_WIDTH, TOR_HEIGHT)) 
+            vga_nxt.rgb = isTaken[0] ? 12'hF00 : 12'hFFF;
+        else if (DrawTrack(vga_in.hcount, vga_in.vcount, START_X_LEWY_SZLAK, Y_SZLAK_L2, TOR_SZLAK_WIDTH, TOR_HEIGHT)) 
+            vga_nxt.rgb = isTaken[1] ? 12'hF00 : 12'hFFF;
+        else if (DrawTrack(vga_in.hcount, vga_in.vcount, START_X_PRAWY_SZLAK, Y_SZLAK_P1, TOR_SZLAK_WIDTH, TOR_HEIGHT)) 
+            vga_nxt.rgb = isTaken[8] ? 12'hF00 : 12'hFFF;
+        else if (DrawTrack(vga_in.hcount, vga_in.vcount, START_X_PRAWY_SZLAK, Y_SZLAK_P2, TOR_SZLAK_WIDTH, TOR_HEIGHT)) 
+            vga_nxt.rgb = isTaken[9] ? 12'hF00 : 12'hFFF;
     end
 endmodule

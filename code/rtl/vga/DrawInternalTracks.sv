@@ -1,7 +1,7 @@
 module DrawInternalTracks (
     input  logic clk,
     input  logic rst_n,
-    input logic [5:0] isTaken,
+    input logic [9:0] isTaken,
     vga_if.in  vga_in,
     vga_if.out vga_out
 );
@@ -23,7 +23,7 @@ module DrawInternalTracks (
         vga_nxt.vcount = vga_in.vcount; vga_nxt.hcount = vga_in.hcount; vga_nxt.vsync = vga_in.vsync; vga_nxt.hsync = vga_in.hsync; vga_nxt.vblnk = vga_in.vblnk; vga_nxt.hblnk = vga_in.hblnk; vga_nxt.rgb = vga_in.rgb;
         for (int i = 0; i < TRACK_NUMBER; i++) begin
         if (DrawTrack(vga_in.hcount, vga_in.vcount, START_X_STACJA, StationTrackY[i], TOR_WIDTH, TOR_HEIGHT)) begin
-                vga_nxt.rgb = isTaken[i] ? 12'hF_0_0 : 12'hF_F_F;
+                vga_nxt.rgb = isTaken[i+2] ? 12'hF_0_0 : 12'hF_F_F;
             end
     end
        

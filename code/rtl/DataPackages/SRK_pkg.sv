@@ -1,6 +1,6 @@
 package SRK_pkg;
     localparam SemaforWidth = 16;
-    localparam SemaforHeight = 50;
+    localparam SemaforHeight = 20;
     localparam LedDiameter = 10;
 
     function automatic logic DrawRect(input int x_pos, input int y_pos, input int rectX, input int rectY, input int Width, input int Height);

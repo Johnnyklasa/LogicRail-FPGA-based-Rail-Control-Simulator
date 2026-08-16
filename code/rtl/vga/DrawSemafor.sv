@@ -74,9 +74,9 @@ always_comb begin
             
             if (DrawCircle(local_x, local_y, 5, 8, 3)) begin
                 case (signals[active_sem_id_reg]) 
-                    2'h1: vga_nxt.rgb = 12'hF_0_0; // Czerwony
-                    2'h2: vga_nxt.rgb = 12'h0_F_0; // Zielony
-                    2'h3: vga_nxt.rgb = 12'hF_F_0; // Żółty
+                    2'h0: vga_nxt.rgb = 12'hF_0_0; // Czerwony
+                    2'h1: vga_nxt.rgb = 12'h0_F_0; // Zielony
+                    2'h2: vga_nxt.rgb = 12'hF_F_0; // Żółty
                     default: vga_nxt.rgb = 12'h0_0_0;
                 endcase
             end

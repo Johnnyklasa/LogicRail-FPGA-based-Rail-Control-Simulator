@@ -3,6 +3,7 @@ module DrawTurnouts (
     input logic rst_n,
     input logic [2:0] route_L1, route_L2, route_P1, route_P2,
     input logic select_L_upper, select_P_upper,
+    input logic [3:0] turnout_taken,
     vga_if.in  vga_in,
     vga_if.out vga_out
 );

@@ -4,7 +4,8 @@ module MapRenderer(
     input logic [2:0] route_L1, route_L2, route_P1, route_P2,
     input logic select_L_upper, select_P_upper,
     input logic [1:0] signals [0:15],
-    input logic [5:0] isTaken,
+    input logic [9:0] isTaken,
+    input logic [3:0] turnout_taken,
     vga_if.in  vga_in,
     vga_if.out vga_out
 );
@@ -29,6 +30,7 @@ module MapRenderer(
 
     DrawEntryTracks u_DrawEntryTracks (
         .clk(clk), .rst_n(rst_n),
+        .isTaken(isTaken),
         .vga_in(vga_internal_tracks),
         .vga_out(vga_entry_tracks)
     );
@@ -38,6 +40,7 @@ module MapRenderer(
         .route_L1(route_L1), .route_L2(route_L2),
         .route_P1(route_P1), .route_P2(route_P2),
         .select_L_upper(select_L_upper), .select_P_upper(select_P_upper),
+        .turnout_taken(turnout_taken),
         .vga_in(vga_entry_tracks),
         .vga_out(vga_turnouts)
     );
