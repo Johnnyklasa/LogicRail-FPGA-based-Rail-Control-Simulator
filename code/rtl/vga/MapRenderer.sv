@@ -6,6 +6,8 @@ module MapRenderer(
     input logic [1:0] signals [0:15],
     input logic [9:0] isTaken,
     input logic [3:0] turnout_taken,
+    input logic [5:0] minutes,
+    input logic [4:0] hours,
     vga_if.in  vga_in,
     vga_if.out vga_out
 );
@@ -14,6 +16,7 @@ module MapRenderer(
     vga_if vga_internal_tracks();
     vga_if vga_entry_tracks();
     vga_if vga_turnouts();
+    vga_if vga_semafor();
 
     DrawPlatforms u_DrawPlatforms (
         .clk(clk), .rst_n(rst_n),
@@ -49,6 +52,14 @@ module MapRenderer(
         .clk(clk), .rst_n(rst_n),
         .signals(signals), 
         .vga_in(vga_turnouts),
+        .vga_out(vga_semafor)
+    );
+
+
+    DrawClock u_DrawClock(
+        .clk(clk), .rst_n(rst_n),
+        .minutes(minutes), .hours(hours),
+        .vga_in(vga_semafor),
         .vga_out(vga_out)
     );
 endmodule

@@ -31,7 +31,7 @@ module RouteFSM(
             req_prev <= 1'b0;
         end else begin
             state <= state_nxt;
-            req_prev <= route_req; // Zapamiętanie stanu z poprzedniego taktu
+            req_prev <= route_req;
         end
     end
 
@@ -40,7 +40,7 @@ module RouteFSM(
     
 
     always_comb begin
-        // --- WARTOŚCI DOMYŚLNE ---
+      
         state_nxt = state;
         route_locked = 1'b0;     
         semafor_sig = 2'b00;     
@@ -48,7 +48,7 @@ module RouteFSM(
         
         case (state) 
             IDLE : begin 
-                if (req_pulse) begin  // Używamy impulsu!
+                if (req_pulse) begin  
                     state_nxt = CHECK_ROUTE;
                 end
             end

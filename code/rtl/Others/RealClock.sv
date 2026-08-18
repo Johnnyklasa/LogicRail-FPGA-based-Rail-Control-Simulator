@@ -6,7 +6,8 @@ module RealClock(
     output logic minute_tick
 );
 
-localparam cyclespersecond = 2000000;
+
+localparam cyclespersecond = 40000000;
 
 logic [4:0] hours_nxt;
 logic [5:0]minutes_nxt; 

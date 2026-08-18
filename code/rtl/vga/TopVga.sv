@@ -229,6 +229,8 @@ module TopVga(
         .signals(signals),
         .isTaken(track_taken),
         .turnout_taken(turnout_taken),
+        .minutes(minutes),
+        .hours(hours),
         .vga_in(vga_tim),
         .vga_out(vga_map)
     );

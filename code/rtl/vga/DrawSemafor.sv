@@ -16,15 +16,15 @@ vga_if vga_nxt();
 int active_sem_id_reg;
 int local_x, local_y;
 
-
-function automatic int GetSemaforID(input int h, input int v);
+ function automatic int GetSemaforID(input int h, input int v);
     for (int i = 0; i < SEMAFOR_NUMBER; i++) begin
         if (DrawRect(h, v, SemaforXPos[i], SemaforYPos[i], SemaforWidth, SemaforHeight)) begin
             return i; 
         end
     end
-    return -1; // Brak zderzenia
+    return -1; 
 endfunction
+
 
 
 always_ff @(posedge clk or negedge rst_n) begin 

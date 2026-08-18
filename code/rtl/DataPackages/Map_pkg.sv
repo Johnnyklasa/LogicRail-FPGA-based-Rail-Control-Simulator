@@ -59,33 +59,59 @@ package Map_pkg;
     };
 
     // --- TABLICE POZYCJI X i Y DLA SEMAFORÓW ---
-    // (Ustawione obok torów: 15px nad torem. 12 przy stacji, 4 przy wjazdach)
-    localparam logic [11:0] SemaforXPos [0:SEMAFOR_NUMBER-1] = '{
+   
+ localparam logic [11:0] SemaforXPos [0:SEMAFOR_NUMBER-1] = '{
         12'(START_X_LEWY_SZLAK + TOR_SZLAK_WIDTH - 20), // 0: Wjazd L1
         12'(START_X_LEWY_SZLAK + TOR_SZLAK_WIDTH - 20), // 1: Wjazd L2
-        12'(START_X_STACJA + 10),                       // 2: Tor 1 Lewy
-        12'(START_X_STACJA + 10),                       // 3: Tor 2 Lewy
-        12'(START_X_STACJA + 10),                       // 4: Tor 3 Lewy
-        12'(START_X_STACJA + 10),                       // 5: Tor 4 Lewy
-        12'(START_X_STACJA + 10),                       // 6: Tor 5 Lewy
-        12'(START_X_STACJA + 10),                       // 7: Tor 6 Lewy
-        12'(START_X_STACJA + TOR_WIDTH - 20),           // 8: Tor 1 Prawy
-        12'(START_X_STACJA + TOR_WIDTH - 20),           // 9: Tor 2 Prawy
-        12'(START_X_STACJA + TOR_WIDTH - 20),           // 10: Tor 3 Prawy
-        12'(START_X_STACJA + TOR_WIDTH - 20),           // 11: Tor 4 Prawy
-        12'(START_X_STACJA + TOR_WIDTH - 20),           // 12: Tor 5 Prawy
-        12'(START_X_STACJA + TOR_WIDTH - 20),           // 13: Tor 6 Prawy
+        
+        12'(START_X_STACJA + TOR_WIDTH - 20),           // 2: Tor 1 Prawy (Wyjazd w prawo)
+        12'(START_X_STACJA + 10),                       // 3: Tor 1 Lewy  (Wyjazd w lewo)
+        
+        12'(START_X_STACJA + TOR_WIDTH - 20),           // 4: Tor 2 Prawy
+        12'(START_X_STACJA + 10),                       // 5: Tor 2 Lewy
+        
+        12'(START_X_STACJA + TOR_WIDTH - 20),           // 6: Tor 3 Prawy
+        12'(START_X_STACJA + 10),                       // 7: Tor 3 Lewy
+        
+        12'(START_X_STACJA + TOR_WIDTH - 20),           // 8: Tor 4 Prawy
+        12'(START_X_STACJA + 10),                       // 9: Tor 4 Lewy
+        
+        12'(START_X_STACJA + TOR_WIDTH - 20),           // 10: Tor 5 Prawy
+        12'(START_X_STACJA + 10),                       // 11: Tor 5 Lewy
+        
+        12'(START_X_STACJA + TOR_WIDTH - 20),           // 12: Tor 6 Prawy
+        12'(START_X_STACJA + 10),                       // 13: Tor 6 Lewy
+        
         12'(START_X_PRAWY_SZLAK + 10),                  // 14: Wjazd P1
         12'(START_X_PRAWY_SZLAK + 10)                   // 15: Wjazd P2
     };
 
+   
     localparam logic [11:0] SemaforYPos [0:SEMAFOR_NUMBER-1] = '{
-        12'(Y_SZLAK_L1 - 15), 12'(Y_SZLAK_L2 - 15),
-        12'(Y_TOR1 - 15), 12'(Y_TOR2 - 15), 12'(Y_TOR3 - 15), 12'(Y_TOR4 - 15), 12'(Y_TOR5 - 15), 12'(Y_TOR6 - 15),
-        12'(Y_TOR1 - 15), 12'(Y_TOR2 - 15), 12'(Y_TOR3 - 15), 12'(Y_TOR4 - 15), 12'(Y_TOR5 - 15), 12'(Y_TOR6 - 15),
-        12'(Y_SZLAK_P1 - 15), 12'(Y_SZLAK_P2 - 15)
+        12'(Y_SZLAK_L1 - 15), 
+        12'(Y_SZLAK_L2 - 15),
+        
+        12'(Y_TOR1 - 15), // 2: Tor 1 Prawy
+        12'(Y_TOR1 - 15), // 3: Tor 1 Lewy
+        
+        12'(Y_TOR2 - 15), // 4: Tor 2 Prawy
+        12'(Y_TOR2 - 15), // 5: Tor 2 Lewy
+        
+        12'(Y_TOR3 - 15), // 6: Tor 3 Prawy
+        12'(Y_TOR3 - 15), // 7: Tor 3 Lewy
+        
+        12'(Y_TOR4 - 15), // 8: Tor 4 Prawy
+        12'(Y_TOR4 - 15), // 9: Tor 4 Lewy
+        
+        12'(Y_TOR5 - 15), // 10: Tor 5 Prawy
+        12'(Y_TOR5 - 15), // 11: Tor 5 Lewy
+        
+        12'(Y_TOR6 - 15), // 12: Tor 6 Prawy
+        12'(Y_TOR6 - 15), // 13: Tor 6 Lewy
+        
+        12'(Y_SZLAK_P1 - 15), 
+        12'(Y_SZLAK_P2 - 15)
     };
-
     // --- TABLICE POZYCJI Y DLA TORÓW ---
     localparam logic [11:0] StationTrackY [0:5] = '{
         12'(Y_TOR1), 12'(Y_TOR2), 12'(Y_TOR3), 
