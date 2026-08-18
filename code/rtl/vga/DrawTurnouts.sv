@@ -27,7 +27,7 @@ module DrawTurnouts (
 
     logic d_L1_reg, d_L2_reg, d_P1_reg, d_P2_reg;
     logic act_L1_reg, act_L2_reg, act_P1_reg, act_P2_reg;
-
+    logic taken_L1_reg, taken_L2_reg, taken_P1_reg, taken_P2_reg;
 
     always_ff @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
@@ -113,6 +113,7 @@ module DrawTurnouts (
             vga_mid.rgb <= '0;
             d_L1_reg <= 0; d_L2_reg <= 0; d_P1_reg <= 0; d_P2_reg <= 0;
             act_L1_reg <= 0; act_L2_reg <= 0; act_P1_reg <= 0; act_P2_reg <= 0;
+             taken_L1_reg <= 0; taken_L2_reg <= 0; taken_P1_reg <= 0; taken_P2_reg <= 0;
         end else begin
             vga_mid.vcount <= vga_in_reg.vcount;
             vga_mid.hcount <= vga_in_reg.hcount;
@@ -132,6 +133,11 @@ module DrawTurnouts (
             act_L2_reg <= act_L2;
             act_P1_reg <= act_P1;
             act_P2_reg <= act_P2;
+
+            taken_L1_reg <= turnout_taken[0];
+            taken_L2_reg <= turnout_taken[1];
+            taken_P1_reg <= turnout_taken[2];
+            taken_P2_reg <= turnout_taken[3];
         end
     end
 
@@ -142,10 +148,10 @@ module DrawTurnouts (
         vga_nxt.vblnk = vga_mid.vblnk;   vga_nxt.hblnk = vga_mid.hblnk;
         vga_nxt.rgb = vga_mid.rgb;
 
-        if (d_L1_reg) vga_nxt.rgb = act_L1_reg ? 12'hFFF : 12'h444;
-        else if (d_L2_reg) vga_nxt.rgb = act_L2_reg ? 12'hFFF : 12'h444;
-        else if (d_P1_reg) vga_nxt.rgb = act_P1_reg ? 12'hFFF : 12'h444;
-        else if (d_P2_reg) vga_nxt.rgb = act_P2_reg ? 12'hFFF : 12'h444;
+       if (d_L1_reg) vga_nxt.rgb = taken_L1_reg ? 12'hF00 : (act_L1_reg ? 12'hFFF : 12'h444);
+        else if (d_L2_reg) vga_nxt.rgb = taken_L2_reg ? 12'hF00 : (act_L2_reg ? 12'hFFF : 12'h444);
+        else if (d_P1_reg) vga_nxt.rgb = taken_P1_reg ? 12'hF00 : (act_P1_reg ? 12'hFFF : 12'h444);
+        else if (d_P2_reg) vga_nxt.rgb = taken_P2_reg ? 12'hF00 : (act_P2_reg ? 12'hFFF : 12'h444);
     end
 
 

@@ -25,7 +25,7 @@ module TrainGenerator (
         end 
         else begin
             if (!train_waiting) begin
-                // Czekamy na pociąg z niezawodnych tablic równoległych
+                
                 for (int i = 0; i < SCHEDULE_SIZE; i++) begin
                     if (current_time == Sched_Arrival[i]) begin
                         TrainID <= Sched_TrainID[i];

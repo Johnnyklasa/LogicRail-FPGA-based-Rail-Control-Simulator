@@ -2,9 +2,6 @@ package Timetable_pkg;
 
     localparam int SCHEDULE_SIZE = 3; 
 
-    // TABLICE RÓWNOLEGŁE (Bulletproof dla Vivado XSim)
-    // Indeks 0 = Pociąg 1, Indeks 1 = Pociąg 2, Indeks 2 = Pociąg 3
-
     localparam logic [7:0] Sched_TrainID [0:2] = '{
         8'd101, 
         8'd115, 
