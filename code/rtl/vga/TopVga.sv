@@ -69,6 +69,7 @@ module TopVga(
     vga_if vga_tim();
     vga_if vga_map();
     vga_if vga_mouse();
+    vga_if vga_rozk();
 
     assign vs = vga_mouse.vsync;
     assign hs = vga_mouse.hsync;
@@ -145,9 +146,6 @@ module TopVga(
         (turnout_pos[1]==3'd5 && signals[11]==2'b01)? track_train_id[6] : 
         (turnout_pos[1]==3'd6 && signals[13]==2'b01)? track_train_id[7] : 8'd0;
 
-    // =======================================================
-    // DETEKTORY ZBOCZA (Puls 1-taktowy)
-    // =======================================================
     logic minute_tick_prev;
     logic train_tick_pulse;
     logic mouse_click_pulse;
@@ -160,7 +158,7 @@ module TopVga(
         end
     end
 
-    // TUTAJ BYŁ BRAK! OTO DWA KLUCZOWE PRZYPISANIA:
+   
     assign train_tick_pulse = minute_tick & ~minute_tick_prev;
     assign mouse_click_pulse = mouse_left_s1 & ~mouse_left_s2;
 
@@ -235,12 +233,22 @@ module TopVga(
         .vga_out(vga_map)
     );
 
+    DrawTimetable u_DrawTimetable (
+        .clk(clk),
+        .rst_n(rst_n),
+        .MouseLeftClick(mouse_click_pulse), 
+        .X_POS(x_s2),                       
+        .Y_POS(y_s2),                       
+        .vga_in(vga_map),    
+        .vga_out(vga_rozk)  
+    );
+
     DrawMouse u_DrawMouse(
         .clk(clk),
         .rst_n(rst_n),
         .X_POS(x_s2),        
         .Y_POS(y_s2),        
-        .vga_in(vga_map), 
+        .vga_in(vga_rozk), 
         .vga_out(vga_mouse)
     );
 
