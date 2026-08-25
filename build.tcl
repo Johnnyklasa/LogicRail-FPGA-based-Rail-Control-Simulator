@@ -1,23 +1,14 @@
 proc checkRequiredFiles { origin_dir} {
   set status true
+  
   set files [list \
- "[file normalize "$origin_dir/LogicRail.srcs/sources_1/ip/clk_wiz_0/clk_wiz_0.xci"]"\
-  ]
-  foreach ifile $files {
-    if { ![file isfile $ifile] } {
-      puts " Could not find local file $ifile "
-      set status false
-    }
-  }
-
-  set files [list \
- "[file normalize "$origin_dir/code/rtl/SRK_Modules/Rozjazd.sv"]"\
+ "[file normalize "$origin_dir/code/rtl/SRK_Modules/Turnout.sv"]"\
+ "[file normalize "$origin_dir/code/rtl/SRK_Modules/Track.sv"]"\
  "[file normalize "$origin_dir/code/rtl/Others/ClickDetector.sv"]"\
  "[file normalize "$origin_dir/code/rtl/Others/RealClock.sv"]"\
  "[file normalize "$origin_dir/code/rtl/Others/UartTx.sv"]"\
  "[file normalize "$origin_dir/code/rtl/Others/UartRx.sv"]"\
  "[file normalize "$origin_dir/code/rtl/Others/UartController.sv"]"\
- "[file normalize "$origin_dir/code/rtl/Others/LED_Serializer.sv"]"\
  "[file normalize "$origin_dir/code/rtl/DataPackages/vga_pkg.sv"]"\
  "[file normalize "$origin_dir/code/rtl/DataPackages/SRK_pkg.sv"]"\
  "[file normalize "$origin_dir/code/rtl/DataPackages/Map_pkg.sv"]"\
@@ -28,9 +19,14 @@ proc checkRequiredFiles { origin_dir} {
  "[file normalize "$origin_dir/code/rtl/vga/DrawPlatforms.sv"]"\
  "[file normalize "$origin_dir/code/rtl/vga/DrawSemafor.sv"]"\
  "[file normalize "$origin_dir/code/rtl/vga/DrawTurnouts.sv"]"\
+ "[file normalize "$origin_dir/code/rtl/vga/DrawClock.sv"]"\
+ "[file normalize "$origin_dir/code/rtl/vga/DrawTimetable.sv"]"\
  "[file normalize "$origin_dir/code/rtl/vga/MapRenderer.sv"]"\
  "[file normalize "$origin_dir/code/rtl/SRK_Modules/Semafor.sv"]"\
- "[file normalize "$origin_dir/code/rtl/SRK_Modules/LedMapper.sv"]"\
+ "[file normalize "$origin_dir/code/rtl/RomMemory/font_rom.sv"]"\
+ "[file normalize "$origin_dir/code/rtl/TrainSimulation/RouteFSM.sv"]"\
+ "[file normalize "$origin_dir/code/rtl/TrainSimulation/TimetableRom.sv"]"\
+ "[file normalize "$origin_dir/code/rtl/TrainSimulation/TrainGenerator.sv"]"\
  "[file normalize "$origin_dir/code/rtl/TrainSimulation/TrainSpawnerFromUART.sv"]"\
  "[file normalize "$origin_dir/code/rtl/vga/TopVga.sv"]"\
  "[file normalize "$origin_dir/code/rtl/vga/VgaTiming.sv"]"\
@@ -69,13 +65,13 @@ if {[string equal [get_filesets -quiet sources_1] ""]} { create_fileset -srcset 
 set obj [get_filesets sources_1]
 
 set files [list \
- [file normalize "${origin_dir}/code/rtl/SRK_Modules/Rozjazd.sv"] \
+ [file normalize "${origin_dir}/code/rtl/SRK_Modules/Turnout.sv"] \
+ [file normalize "${origin_dir}/code/rtl/SRK_Modules/Track.sv"] \
  [file normalize "${origin_dir}/code/rtl/Others/ClickDetector.sv"] \
  [file normalize "${origin_dir}/code/rtl/Others/RealClock.sv"] \
  [file normalize "${origin_dir}/code/rtl/Others/UartTx.sv"] \
  [file normalize "${origin_dir}/code/rtl/Others/UartRx.sv"] \
  [file normalize "${origin_dir}/code/rtl/Others/UartController.sv"] \
- [file normalize "${origin_dir}/code/rtl/Others/LED_Serializer.sv"] \
  [file normalize "${origin_dir}/code/rtl/DataPackages/vga_pkg.sv"] \
  [file normalize "${origin_dir}/code/rtl/DataPackages/SRK_pkg.sv"] \
  [file normalize "${origin_dir}/code/rtl/DataPackages/Map_pkg.sv"] \
@@ -86,9 +82,14 @@ set files [list \
  [file normalize "${origin_dir}/code/rtl/vga/DrawPlatforms.sv"] \
  [file normalize "${origin_dir}/code/rtl/vga/DrawSemafor.sv"] \
  [file normalize "${origin_dir}/code/rtl/vga/DrawTurnouts.sv"] \
+ [file normalize "${origin_dir}/code/rtl/vga/DrawClock.sv"] \
+ [file normalize "${origin_dir}/code/rtl/vga/DrawTimetable.sv"] \
  [file normalize "${origin_dir}/code/rtl/vga/MapRenderer.sv"] \
  [file normalize "${origin_dir}/code/rtl/SRK_Modules/Semafor.sv"] \
- [file normalize "${origin_dir}/code/rtl/SRK_Modules/LedMapper.sv"] \
+ [file normalize "${origin_dir}/code/rtl/RomMemory/font_rom.sv"] \
+ [file normalize "${origin_dir}/code/rtl/TrainSimulation/RouteFSM.sv"] \
+ [file normalize "${origin_dir}/code/rtl/TrainSimulation/TimetableRom.sv"] \
+ [file normalize "${origin_dir}/code/rtl/TrainSimulation/TrainGenerator.sv"] \
  [file normalize "${origin_dir}/code/rtl/TrainSimulation/TrainSpawnerFromUART.sv"] \
  [file normalize "${origin_dir}/code/rtl/vga/TopVga.sv"] \
  [file normalize "${origin_dir}/code/rtl/vga/VgaTiming.sv"] \
@@ -100,9 +101,20 @@ set files [list \
 ]
 add_files -norecurse -fileset $obj $files
 
-if {[file exists "${origin_dir}/LogicRail.srcs/sources_1/ip/clk_wiz_0/clk_wiz_0.xci"]} {
-    import_files -fileset sources_1 [file normalize "${origin_dir}/LogicRail.srcs/sources_1/ip/clk_wiz_0/clk_wiz_0.xci"]
-}
+# Poprawiona konfiguracja modułu sprzętowego MMCM (Clocking Wizard) dla Vivado 2025+
+puts "INFO: Generowanie modulu clk_wiz_0..."
+create_ip -name clk_wiz -vendor xilinx.com -library ip -module_name clk_wiz_0
+set_property -dict [list \
+    CONFIG.CLKOUT2_USED {true} \
+    CONFIG.CLKOUT1_REQUESTED_OUT_FREQ {100.000} \
+    CONFIG.CLKOUT2_REQUESTED_OUT_FREQ {65.000} \
+    CONFIG.USE_LOCKED {true} \
+    CONFIG.USE_RESET {false} \
+    CONFIG.CLK_OUT1_PORT {clk100MHz} \
+    CONFIG.CLK_OUT2_PORT {clk65MHz} \
+    CONFIG.PRIMARY_PORT {clk} \
+] [get_ips clk_wiz_0]
+generate_target all [get_ips clk_wiz_0]
 
 foreach f $files {
     set file_obj [get_files -of_objects [get_filesets sources_1] [list "*[file tail $f]"]]

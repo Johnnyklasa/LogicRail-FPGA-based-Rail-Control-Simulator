@@ -1,8 +1,8 @@
 module RealClock #(
     parameter int CLK_FREQ = 65_000_000 
+)(
     input logic clk,
     input logic rst_n,
-    
     
     input logic sync_en,
     input logic [4:0] sync_hours,
@@ -17,7 +17,6 @@ module RealClock #(
     logic [5:0] minutes_nxt; 
     int clockcycles;
 
-    
     assign minute_tick = (clockcycles == (CLK_FREQ * 20) - 1);
 
     always_ff @(posedge clk or negedge rst_n) begin
@@ -29,6 +28,7 @@ module RealClock #(
             hours <= sync_hours;
             minutes <= sync_minutes;
             clockcycles <= 0; 
+        end else begin
             hours <= hours_nxt;
             minutes <= minutes_nxt;
             if (minute_tick) begin

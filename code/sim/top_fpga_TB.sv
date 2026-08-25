@@ -58,7 +58,7 @@ module top_fpga_TB();
 
         
         $display("[TB] Wysylanie pakietu synchronizacji czasu: 18:45...");
-        send_uart_byte(8'hFF); /
+        send_uart_byte(8'hFF); 
         send_uart_byte(8'd18);  
         send_uart_byte(8'd45);  
 
