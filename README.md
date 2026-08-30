@@ -45,5 +45,3 @@ C:\Xilinx\Vivado\2025.2\bin\vivado.bat -mode batch -source build.tcl
 Aby zaktualizować projekt po dodania np. modułu potrzebne jest zaktualizowanie skryptu   build.tcl Robimy to poprzez wpisanie
 '''bash
 write_project_tcl -force build.tcl
-'''
-w tcl console w Vivado. Za pomoca komendy cd wejdz do folderu projektu (LogicRail-FPGA.....) aby nadpisać istniejacy już plik.
