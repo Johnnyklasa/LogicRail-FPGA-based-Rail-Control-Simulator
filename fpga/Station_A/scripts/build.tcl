@@ -64,6 +64,13 @@ proc checkRequiredFiles { origin_dir} {
 
   return $status
 }
+# Set the reference directory for source file relative paths (by default the value is script directory path)
+set origin_dir [file dirname [info script]]
+
+# Use origin directory path location variable, if specified in the tcl shell
+if { [info exists ::orign_dir_loc] } {
+  set origin_dir $::origin_dir_loc
+}
 
 # Set the project name
 set _xil_proj_name_ "LogicRail"
