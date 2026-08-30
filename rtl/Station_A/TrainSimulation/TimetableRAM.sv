@@ -1,3 +1,4 @@
+//Autor:Jan Rutkowski
 module TimetableRAM (
     input  logic clk,
    

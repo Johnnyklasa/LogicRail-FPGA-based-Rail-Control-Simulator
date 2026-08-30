@@ -1,3 +1,4 @@
+//Autor: Karol Sitko
 module LedMapper (
     input  logic [1:0] signals [0:15],
     input  logic [9:0] track_taken, 

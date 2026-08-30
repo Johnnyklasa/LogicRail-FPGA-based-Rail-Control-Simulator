@@ -1,3 +1,4 @@
+//Autor:Karol Sitko
 package SRK_pkg;
     localparam SemaforWidth = 16;
     localparam SemaforHeight = 20;

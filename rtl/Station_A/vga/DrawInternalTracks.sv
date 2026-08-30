@@ -1,3 +1,4 @@
+//Autor: Karol sitko
 module DrawInternalTracks (
     input  logic clk,
     input  logic rst_n,

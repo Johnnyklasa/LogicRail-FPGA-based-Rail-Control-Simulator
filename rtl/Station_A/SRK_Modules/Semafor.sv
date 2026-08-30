@@ -1,3 +1,4 @@
+//Autor:Jan Rutkowski
 module Semafor #(
     parameter int SEMAFOR_ID = 0 
 )(

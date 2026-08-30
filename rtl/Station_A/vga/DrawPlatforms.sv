@@ -1,3 +1,4 @@
+//Autor: Karol sitko
 module DrawPlatforms (
     input  logic clk,
     input  logic rst_n,

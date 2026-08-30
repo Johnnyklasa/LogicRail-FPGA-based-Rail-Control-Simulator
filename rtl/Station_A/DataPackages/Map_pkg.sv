@@ -1,3 +1,5 @@
+
+//Autor:Karol Sitko
 package Map_pkg;
 
     localparam int SEMAFOR_NUMBER = 16;

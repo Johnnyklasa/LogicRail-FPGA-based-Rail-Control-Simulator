@@ -1,3 +1,4 @@
+//Autor:Jan Rutkowski
 module ClickDetector(
     input logic clk,
     input logic Signal,

@@ -1,3 +1,4 @@
+//Autor:Jan Rutkowski
 package Timetable_pkg;
 
     localparam int SCHEDULE_SIZE = 15; 

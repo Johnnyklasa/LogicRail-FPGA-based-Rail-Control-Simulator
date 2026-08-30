@@ -1,3 +1,5 @@
+
+//Autor:Karol Sitko
 module top_vga_basys3 (
     input  wire clk,
     input  wire btnC,          

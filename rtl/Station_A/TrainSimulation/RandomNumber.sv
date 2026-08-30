@@ -1,3 +1,4 @@
+//Autor:Jan Rutkowski
 module RandomNumber (
     input  logic clk,
     output logic [31:0] rnd 

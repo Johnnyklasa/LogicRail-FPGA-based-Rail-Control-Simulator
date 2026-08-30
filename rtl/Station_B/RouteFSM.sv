@@ -1,3 +1,4 @@
+//Autor: Jan Rutkowskis
 module RouteFSM(
     input  logic clk,
     input  logic rst_n,

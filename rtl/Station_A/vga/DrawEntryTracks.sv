@@ -1,3 +1,4 @@
+//Autor:Karol Sitko
 module DrawEntryTracks (
     input logic clk,
     input logic rst_n,

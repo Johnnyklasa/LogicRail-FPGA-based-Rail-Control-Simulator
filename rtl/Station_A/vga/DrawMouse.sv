@@ -1,4 +1,4 @@
-
+//Autor: Karol sitko
 module DrawMouse (
     input  logic clk,
     input  logic rst_n,

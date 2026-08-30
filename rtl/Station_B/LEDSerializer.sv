@@ -1,10 +1,11 @@
+//Autor: Karol Sitko
 module LEDSerializer (
-    input  logic clk,           // Zegar systemowy
-    input  logic rst,           // Reset
-    input  logic [47:0] led_data, // Wektor danych do wysłania
-    output logic ds,            // Data Serial
-    output logic shcp,          // Shift Clock
-    output logic stcp           // Latch Clock
+    input  logic clk,         
+    input  logic rst,           
+    input  logic [47:0] led_data, 
+    output logic ds,           
+    output logic shcp,          
+    output logic stcp           
 );
     logic [5:0] clk_div;
     logic shift_tick;

@@ -1,3 +1,4 @@
+//Autor:Jan Rutkowski
 module DrawClock(
     input logic clk,
     input logic rst_n,

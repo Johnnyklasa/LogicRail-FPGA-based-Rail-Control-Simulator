@@ -1,10 +1,11 @@
+//Autor:Jan Rutkowski
 module BootFSM(
     input  logic clk,
     input  logic rst_n,
     input  logic enable,
     input  logic [15:0] random_number,
-    output logic done,             // Flaga: rozkład gotowy!
-    output logic mem_we,           // Sygnał zapisu do pamięci RAM
+    output logic done,             
+    output logic mem_we,          
     output logic [3:0] mem_addr,   
     output logic [11:0] arr_time,
     output logic [11:0] dep_time
@@ -30,7 +31,7 @@ module BootFSM(
     end
 
     always_comb begin
-        // Wartości domyślne (zapobiegają latchom!)
+       
         state_nxt = state;
         current_time_nxt = current_time;
         train_idx_nxt = train_idx;
