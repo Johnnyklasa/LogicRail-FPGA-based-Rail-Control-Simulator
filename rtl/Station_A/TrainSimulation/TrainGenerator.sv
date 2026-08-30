@@ -1,3 +1,4 @@
+//Autor:Jan Rutkowski
 module TrainGenerator (
     input  logic clk,
     input  logic rst_n,

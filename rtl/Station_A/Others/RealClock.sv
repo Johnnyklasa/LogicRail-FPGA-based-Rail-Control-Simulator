@@ -1,3 +1,4 @@
+//Autor:Jan Rutkowski
 module RealClock #(
     parameter int CLK_FREQ = 65_000_000 
 )(
