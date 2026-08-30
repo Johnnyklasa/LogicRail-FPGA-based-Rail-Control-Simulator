@@ -141,7 +141,7 @@ proc checkRequiredFiles { origin_dir} {
   return $status
 }
 # Set the reference directory for source file relative paths (by default the value is script directory path)
-set origin_dir "C:/Users/Jasiek/Documents/cyfrwka/LogicRail-FPGA-based-Rail-Control-Simulator/LogicRail"
+set origin_dir [file dirname [info script]]
 
 # Use origin directory path location variable, if specified in the tcl shell
 if { [info exists ::origin_dir_loc] } {
