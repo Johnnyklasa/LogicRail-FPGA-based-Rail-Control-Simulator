@@ -1,3 +1,4 @@
+//Autor: Jan Rutkowski
 module TopVga(
     input logic clk,               
     input logic clk100MHz,         
@@ -9,6 +10,9 @@ module TopVga(
     output logic [3:0] b,
     output logic send_train_req_out,
     output logic [7:0] tx_train_id_out,
+    input  logic [7:0] rx_train_id_in,
+    input  logic rx_train_req_in,
+    input  logic tx_busy_in,
     input  logic [4:0] hours,
     input  logic [5:0] minutes,
     input  logic minute_tick,
@@ -332,31 +336,29 @@ module TopVga(
         .TrainID(spawned_train_id)
     );
 
-
-    logic track8_is_departing;  
-    logic track9_is_departing;
-
-
     TrainExporter u_TrainExporter (
         .clk(clk),
         .rst_n(rst_n),
         .train_tick_pulse(train_tick_pulse), 
         .tx_busy(tx_busy),
-        
-        .track8_taken(track_taken[8]),
-        .P1_moving_right(P1_moving_right),
-        .turnout2_taken(turnout_taken[2]),
-        .track8_train_id(track_train_id[8]),
-        .track8_is_departing(track8_is_departing), // Wychodzi do Toru 8
-        
-        .track9_taken(track_taken[9]),
-        .P2_moving_right(P2_moving_right),
-        .turnout3_taken(turnout_taken[3]),
-        .track9_train_id(track_train_id[9]),
-        .track9_is_departing(track9_is_departing), // Wychodzi do Toru 9
-        
+        .track8_taken(track_taken[8]),    
+        .track8_train_id(track_train_id[8]),  
         .send_train_req(send_train_req_out),
         .tx_train_id_out(tx_train_id_out)
+    );
+
+    logic [7:0] incoming_train_id;
+    logic incoming_train_waiting;
+
+    TrainSpawnerFromUART u_TrainSpawner (
+        .clk(clk),
+        .rst_n(rst_n),
+        .train_tick(train_tick_pulse),
+        .approach_track_taken(track_taken[9]), 
+        .rx_train_id(vga_train_id), // Tu podpinasz drut z UartController
+        .rx_train_req(vga_train_req), // Tu podpinasz drut z UartController
+        .train_waiting(incoming_train_waiting),
+        .TrainID(incoming_train_id)
     );
 
     
@@ -368,9 +370,6 @@ module TopVga(
 
     Track u_Track_0 (.clk(clk), .rst_n(rst_n), .train_tick(train_tick_pulse), .move_R(signals[0] == 2'b01),  .move_L(1'b0),                 .track_R_taken(turnout_taken[0]),               .track_L_taken(1'b0),                            .train_id_in_L(spawned_train_id),       .train_id_in_R(8'd0),                  .current_train_id(track_train_id[0]), .isTaken(track_taken[0]));
     Track u_Track_1 (.clk(clk), .rst_n(rst_n), .train_tick(train_tick_pulse), .move_R(signals[1] == 2'b01),  .move_L(1'b0),                 .track_R_taken(turnout_taken[1]),               .track_L_taken(1'b0),                            .train_id_in_L(8'd0),                   .train_id_in_R(8'd0),                  .current_train_id(track_train_id[1]), .isTaken(track_taken[1]));
-
-
-
     
     Track u_Track_2 (.clk(clk), .rst_n(rst_n), .train_tick(train_tick_pulse), .move_R(signals[2] == 2'b01),  .move_L(signals[3] == 2'b01),  .track_R_taken(turnout_taken[2]|turnout_taken[3]), .track_L_taken(turnout_taken[0]|turnout_taken[1]), .train_id_in_L(train_to_plat_L[2]),    .train_id_in_R(train_to_plat_R[2]),    .current_train_id(track_train_id[2]), .isTaken(track_taken[2]));
     Track u_Track_3 (.clk(clk), .rst_n(rst_n), .train_tick(train_tick_pulse), .move_R(signals[4] == 2'b01),  .move_L(signals[5] == 2'b01),  .track_R_taken(turnout_taken[2]|turnout_taken[3]), .track_L_taken(turnout_taken[0]|turnout_taken[1]), .train_id_in_L(train_to_plat_L[3]),    .train_id_in_R(train_to_plat_R[3]),    .current_train_id(track_train_id[3]), .isTaken(track_taken[3]));
@@ -378,9 +377,30 @@ module TopVga(
     Track u_Track_5 (.clk(clk), .rst_n(rst_n), .train_tick(train_tick_pulse), .move_R(signals[8] == 2'b01),  .move_L(signals[9] == 2'b01),  .track_R_taken(turnout_taken[2]|turnout_taken[3]), .track_L_taken(turnout_taken[0]|turnout_taken[1]), .train_id_in_L(train_to_plat_L[5]),    .train_id_in_R(train_to_plat_R[5]),    .current_train_id(track_train_id[5]), .isTaken(track_taken[5]));
     Track u_Track_6 (.clk(clk), .rst_n(rst_n), .train_tick(train_tick_pulse), .move_R(signals[10] == 2'b01), .move_L(signals[11] == 2'b01), .track_R_taken(turnout_taken[2]|turnout_taken[3]), .track_L_taken(turnout_taken[0]|turnout_taken[1]), .train_id_in_L(train_to_plat_L[6]),    .train_id_in_R(train_to_plat_R[6]),    .current_train_id(track_train_id[6]), .isTaken(track_taken[6]));
     Track u_Track_7 (.clk(clk), .rst_n(rst_n), .train_tick(train_tick_pulse), .move_R(signals[12] == 2'b01), .move_L(signals[13] == 2'b01), .track_R_taken(turnout_taken[2]|turnout_taken[3]), .track_L_taken(turnout_taken[0]|turnout_taken[1]), .train_id_in_L(train_to_plat_L[7]),    .train_id_in_R(train_to_plat_R[7]),    .current_train_id(track_train_id[7]), .isTaken(track_taken[7]));
-   Track u_Track_8 (.clk(clk), .rst_n(rst_n), .train_tick(train_tick_pulse), .move_R(1'b1), .move_L(signals[14] == 2'b01), .track_R_taken(1'b0), .track_L_taken(turnout_taken[2]), .train_id_in_L(P1_moving_right ? turnout_train_id[2] : 8'd0), .train_id_in_R(gen_train_id[2]), .current_train_id(track_train_id[8]), .isTaken(track_taken[8]));
-    Track u_Track_9 (.clk(clk), .rst_n(rst_n), .train_tick(train_tick_pulse), .move_R(1'b1), .move_L(signals[15] == 2'b01), .track_R_taken(1'b0), .track_L_taken(turnout_taken[3]), .train_id_in_L(P2_moving_right ? turnout_train_id[3] : 8'd0), .train_id_in_R(gen_train_id[3]), .current_train_id(track_train_id[9]), .isTaken(track_taken[9]));   
-    // Moduły Semaforów dostają mouse_left_s2, ponieważ mają w środku własny ClickDetector!
+  
+    Track u_Track_8 (
+        .clk(clk), .rst_n(rst_n), .train_tick(train_tick_pulse), 
+        .move_R(1'b1),
+        .move_L(1'b0),
+        .track_R_taken(1'b0), 
+        .track_L_taken(turnout_taken[2]), 
+        .train_id_in_L(P1_moving_right ? turnout_train_id[2] : 8'd0), 
+        .train_id_in_R(8'd0),
+        .current_train_id(track_train_id[8]), .isTaken(track_taken[8])
+    );
+
+   
+    Track u_Track_9 (
+        .clk(clk), .rst_n(rst_n), .train_tick(train_tick_pulse), 
+        .move_R(1'b0), // Nigdy nie ucieka w prawo!
+        .move_L(signals[15] == 2'b01), 
+        .track_R_taken(turnout_taken[3]), // Bezpiecznik przed wjechaniem w zajęty rozjazd
+        .track_L_taken(turnout_taken[3]), 
+        .train_id_in_L(8'd0), 
+        .train_id_in_R(incoming_train_id), // Sygnał ze Spawnera!
+        .current_train_id(track_train_id[9]), .isTaken(track_taken[9])
+    );
+
     Semafor #(.SEMAFOR_ID(0))  u_Sem_0  (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left_s2), .X_POS(x_s2), .Y_POS(y_s2), .color_from_fsm(signals[0]),  .route_req_out(req_sem[0]),  .OutSignal());
     Semafor #(.SEMAFOR_ID(1))  u_Sem_1  (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left_s2), .X_POS(x_s2), .Y_POS(y_s2), .color_from_fsm(signals[1]),  .route_req_out(req_sem[1]),  .OutSignal());
     Semafor #(.SEMAFOR_ID(2))  u_Sem_2  (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left_s2), .X_POS(x_s2), .Y_POS(y_s2), .color_from_fsm(signals[2]),  .route_req_out(req_sem[2]),  .OutSignal());

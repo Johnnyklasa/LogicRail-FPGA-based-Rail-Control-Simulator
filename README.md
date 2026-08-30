@@ -3,7 +3,7 @@ Dynamic rail control simulator based on the FPGA boards Basys3
 Logic Rail to w pełni sprzętowy, rozproszony symulator systemu sterowania ruchem kolejowym (SRK) napisany w języku SystemVerilog. Projekt jest implementowany na układach FPGA (Digilent Basys3).
 Architektura projektu opiera się na rozproszonej logice sprzętowej. Składa się z następujących elementów:
 
-Stacja A & Stacja B (FPGA - Digilent Basys): Dwa niezależne węzły sprzętowe komunikujące się ze sobą fizycznym łączem (SPI). Płytki wymieniają informacje o wyprawianych pociągach i stanach szlaku, realizując sprzętowe maszyny stanów (FSM) dla zależności kolejowych (interlocking).
+Stacja A & Stacja B (FPGA - Digilent Basys): Dwa niezależne węzły sprzętowe komunikujące się ze sobą fizycznym łączem (UART). Płytki wymieniają informacje o wyprawianych pociągach i stanach szlaku, realizując sprzętowe maszyny stanów (FSM) dla zależności kolejowych (interlocking).
 
 Sprzętowy Kontroler VGA: Zaimplementowany w SystemVerilogu moduł generujący sygnały synchronizacji (HSYNC/VSYNC) oraz sygnał wizyjny RGB. Moduł na bieżąco renderuje układ torów, stany semaforów oraz pozycje pociągów bezpośrednio na podłączonym monitorze.
 

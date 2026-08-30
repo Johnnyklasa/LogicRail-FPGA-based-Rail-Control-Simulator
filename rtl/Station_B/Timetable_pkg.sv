@@ -1,7 +1,7 @@
 package Timetable_pkg;
 
-    localparam int SCHEDULE_SIZE = 15; 
-/*
+    localparam int SCHEDULE_SIZE = 3; 
+
     localparam logic [7:0] Sched_TrainID [0:2] = '{
         8'd101, 
         8'd115, 
@@ -19,7 +19,7 @@ package Timetable_pkg;
         12'd490, 
         12'd615
     };
-*/
+
 endpackage
 
 

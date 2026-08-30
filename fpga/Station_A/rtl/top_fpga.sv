@@ -62,6 +62,7 @@ module top_vga_basys3 (
         .rx_data(rx_byte),
         .rx_ready(rx_ready)
     );
+    
 
     UartTx #(
         .CLK_FREQ(65_000_000),
@@ -121,17 +122,6 @@ module top_vga_basys3 (
     wire       train_waiting;
     wire [7:0] TrainID;
 
-    TrainSpawnerFromUART u_TrainSpawner (
-        .clk(pclk),
-        .rst_n(rst_n),
-        .train_tick(minute_tick),
-        .approach_track_taken(1'b0),
-        .rx_train_id(rx_train_id),
-        .rx_train_req(rx_train_req),
-        .train_waiting(train_waiting),
-        .TrainID(TrainID)
-    );
-
     wire top_send_train_req;
     wire [7:0] top_tx_train_id;
 
@@ -144,6 +134,9 @@ module top_vga_basys3 (
         .b(vgaBlue),
         .send_train_req_out(top_send_train_req),
         .tx_train_id_out(top_tx_train_id),
+        .rx_train_id_in(rx_train_id),
+        .rx_train_req_in(rx_train_req),
+        .tx_busy_in(tx_busy),
         .hours(current_hours),
         .minutes(current_minutes),
         .minute_tick(minute_tick),
