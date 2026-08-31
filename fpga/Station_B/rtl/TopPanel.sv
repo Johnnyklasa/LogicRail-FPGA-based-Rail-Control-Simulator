@@ -1,8 +1,6 @@
 module TopPanel(
-    input  logic clk,               // Główny zegar systemu (np. 65 MHz z PLL)
-    input  logic clk100MHz,         // Zegar bazowy (na wypadek potrzeby podpięcia pod inne moduły)
-    input  logic system_rst_n,           
-
+    input  logic clk,               
+    input  logic btnC,              
     input  logic [15:0] sw,                
     input  logic [3:0]  custom_sw_turnout, 
 
@@ -14,18 +12,17 @@ module TopPanel(
     output logic tx_uart
 );
 
-    // =======================================================
-    // DEKLARACJE SYGNAŁÓW WEWNĘTRZNYCH (Zawsze na górze!)
-    // =======================================================
-    
-    // Czas i synchronizacja
+  
+    logic system_rst_n;
+    assign system_rst_n = ~btnC;
+
+ 
     logic [4:0] hours;
     logic [5:0] minutes;
     logic minute_tick;
     logic minute_tick_prev;
     logic train_tick_pulse;
 
-    // Reprezentacja układu torowego i FSM
     logic [1:0] signals [0:15];
     logic [2:0] turnout_pos [0:3];
     logic [3:0] turnout_taken;
@@ -34,7 +31,6 @@ module TopPanel(
     logic [7:0] track_train_id [0:9];
     
     logic [7:0] gen_train_id [0:3];
-    logic gen_train_waiting [0:3];
     
     logic req_sem [0:15];
     logic fsm_lock [0:15];
@@ -43,17 +39,14 @@ module TopPanel(
 
     logic [7:0] train_to_plat_L [2:7];
     logic [7:0] train_to_plat_R [2:7];
-    logic [7:0] train_to_turnout_L1;
-    logic [7:0] train_to_turnout_L2;
-    logic [7:0] train_to_turnout_P1;
-    logic [7:0] train_to_turnout_P2;
+    logic [7:0] train_to_turnout_L1, train_to_turnout_L2;
+    logic [7:0] train_to_turnout_P1, train_to_turnout_P2;
 
     logic L1_moving_right, L2_moving_right;
     logic P1_moving_left,  P2_moving_left;
     logic P1_moving_right, P2_moving_right;
     logic L_moving_left;
 
-    // Sygnały UART i Spawnera
     wire sync_en;
     wire [4:0] sync_hours;
     wire [5:0] sync_minutes;
@@ -64,13 +57,10 @@ module TopPanel(
     logic [7:0] spawned_train_id;
     logic incoming_train_waiting;
 
-    // Zmienne do rejestrów i LED
     logic [15:0] sw_prev;
-    logic [47:0] mapped_data; // Zdeklarowane przed użyciem w LedMapper!
+    logic [47:0] mapped_data; 
 
-    // =======================================================
-    // LOGIKA KOMBINACYJNA I PRZYPISANIA
-    // =======================================================
+   
     assign L1_moving_right = fsm_lock[0];
     assign L2_moving_right = fsm_lock[1];
     assign P1_moving_left  = fsm_lock[14];
@@ -80,16 +70,12 @@ module TopPanel(
     assign P2_moving_right = fsm_lock[2] | fsm_lock[4] | fsm_lock[6] | fsm_lock[8] | fsm_lock[10] | fsm_lock[12];
     assign L_moving_left   = fsm_lock[3] | fsm_lock[5] | fsm_lock[7] | fsm_lock[9] | fsm_lock[11] | fsm_lock[13];
 
-    // Nieużywane generatory
     assign gen_train_id[1] = 8'd0;
     assign gen_train_id[2] = 8'd0;
     assign gen_train_id[3] = 8'd0;
 
     assign train_tick_pulse = minute_tick & ~minute_tick_prev;
 
-    // =======================================================
-    // DETEKTOR ZBOCZA DLA PRZEŁĄCZNIKÓW
-    // =======================================================
     always_ff @(posedge clk or negedge system_rst_n) begin
         if (!system_rst_n) begin
             sw_prev <= '0;
@@ -106,9 +92,7 @@ module TopPanel(
         end
     end
     
-    // =======================================================
-    // INSTANCJE MODUŁÓW (UART, ZEGAR, SPAWNER)
-    // =======================================================
+  
     UartController u_UartController (
         .clk(clk),
         .rst_n(system_rst_n),
@@ -130,7 +114,7 @@ module TopPanel(
     );
 
     RealClock #(
-        .CLK_FREQ(65_000_000)
+        .CLK_FREQ(100_000_000) 
     ) u_RealClock (
         .clk(clk),
         .rst_n(system_rst_n),
@@ -153,7 +137,7 @@ module TopPanel(
         .TrainID(spawned_train_id)
     );
 
-    UartRx #( .CLK_FREQ(65_000_000), .BAUD_RATE(115200) ) u_UartRx (
+    UartRx #( .CLK_FREQ(100_000_000), .BAUD_RATE(115200) ) u_UartRx (
         .clk(clk), 
         .rst_n(system_rst_n), 
         .rx(rx_uart), 
@@ -161,7 +145,7 @@ module TopPanel(
         .rx_ready(rx_ready)
     );
 
-    UartTx #( .CLK_FREQ(65_000_000), .BAUD_RATE(115200) ) u_UartTx (
+    UartTx #( .CLK_FREQ(100_000_000), .BAUD_RATE(115200) ) u_UartTx (
         .clk(clk), 
         .rst_n(system_rst_n), 
         .tx_start(tx_start), 
@@ -170,9 +154,6 @@ module TopPanel(
         .tx_busy(tx_busy)
     );
 
-    // =======================================================
-    // LOGIKA SRK: TORY, ZWROTNICE I ZALEŻNOŚCI
-    // =======================================================
     assign fsm_target[0]  = turnout_taken[0] | ((turnout_pos[0]==3'd1)&track_taken[2]) | ((turnout_pos[0]==3'd2)&track_taken[3]) | ((turnout_pos[0]==3'd3)&track_taken[4]) | ((turnout_pos[0]==3'd4)&track_taken[5]) | ((turnout_pos[0]==3'd5)&track_taken[6]) | ((turnout_pos[0]==3'd6)&track_taken[7]);
     assign fsm_target[1]  = turnout_taken[1] | ((turnout_pos[1]==3'd1)&track_taken[2]) | ((turnout_pos[1]==3'd2)&track_taken[3]) | ((turnout_pos[1]==3'd3)&track_taken[4]) | ((turnout_pos[1]==3'd4)&track_taken[5]) | ((turnout_pos[1]==3'd5)&track_taken[6]) | ((turnout_pos[1]==3'd6)&track_taken[7]);
     assign fsm_target[14] = turnout_taken[2] | ((turnout_pos[2]==3'd1)&track_taken[2]) | ((turnout_pos[2]==3'd2)&track_taken[3]) | ((turnout_pos[2]==3'd3)&track_taken[4]) | ((turnout_pos[2]==3'd4)&track_taken[5]) | ((turnout_pos[2]==3'd5)&track_taken[6]) | ((turnout_pos[2]==3'd6)&track_taken[7]);
@@ -270,9 +251,7 @@ module TopPanel(
     RouteFSM u_FSM_14 (.clk(clk), .rst_n(system_rst_n), .route_req(req_sem[14]), .target_track_taken(fsm_target[14]),          .train_passed(!track_taken[8] && !turnout_taken[2]), .route_locked(fsm_lock[14]), .semafor_sig(signals[14]), .train_spawn_ack(fsm_ack[14]));
     RouteFSM u_FSM_15 (.clk(clk), .rst_n(system_rst_n), .route_req(req_sem[15]), .target_track_taken(fsm_target[15]),          .train_passed(!track_taken[9] && !turnout_taken[3]), .route_locked(fsm_lock[15]), .semafor_sig(signals[15]), .train_spawn_ack(fsm_ack[15]));
 
-    // =======================================================
-    // WYJŚCIA NA DIODY LED I REJESTR PRZESUWNY
-    // ======================================================= jknioniokki
+   
     LedMapper u_Mapper (
         .signals(signals),
         .track_taken(track_taken), 
