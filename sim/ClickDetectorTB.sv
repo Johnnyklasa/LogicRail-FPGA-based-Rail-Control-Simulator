@@ -1,4 +1,4 @@
-
+//Autor:Jan Rutkowski
 module ClickDetectorTB;
 
 logic pos_edge;

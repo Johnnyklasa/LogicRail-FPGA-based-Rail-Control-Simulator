@@ -1,3 +1,4 @@
+//Autor:Jan Rutkowski
 module TopPanel(
     input  logic clk,               
     input  logic btnC,              

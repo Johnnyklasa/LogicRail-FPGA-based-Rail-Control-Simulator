@@ -1,4 +1,4 @@
-
+//Autor:Jan Rutkowski
 module SemaforTB;
 
 logic clk;
