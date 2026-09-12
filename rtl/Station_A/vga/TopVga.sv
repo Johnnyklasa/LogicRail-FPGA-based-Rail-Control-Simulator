@@ -21,13 +21,9 @@ module TopVga(
 );
 
     logic [11:0] x_mouse, y_mouse;
-    logic [11:0] x_s1, x_s2, y_s1, y_s2;
     logic [3:0] mouse_z;
     logic mouse_left, mouse_middle, mouse_right, mouse_new_event;
     
-    logic mouse_left_s1, mouse_left_s2;
-    logic mouse_middle_s1, mouse_middle_s2;
-    logic mouse_right_s1, mouse_right_s2;
     logic train_tick;
 
     logic [1:0] signals [0:15];
@@ -181,36 +177,23 @@ module TopVga(
             minute_tick_prev <= minute_tick;
         end
     end
-
-   
     assign train_tick_pulse = minute_tick & ~minute_tick_prev;
-    assign mouse_click_pulse = mouse_left_s1 & ~mouse_left_s2;
+    assign mouse_click_pulse = mouse_left & ~mouse_left_prev;
 
+
+    logic mouse_left_prev;
     always_ff @(posedge clk or negedge rst_n) begin
-        if (!rst_n) begin
-            x_s1 <= '0; x_s2 <= '0;
-            y_s1 <= '0; y_s2 <= '0;
-            mouse_left_s1 <= 1'b0; mouse_left_s2 <= 1'b0;
-            mouse_middle_s1 <= 1'b0; mouse_middle_s2 <= 1'b0;
-            mouse_right_s1 <= 1'b0; mouse_right_s2 <= 1'b0;
-        end else begin
-            x_s1 <= x_mouse; x_s2 <= x_s1;
-            y_s1 <= y_mouse; y_s2 <= y_s1;
-            mouse_left_s1   <= mouse_left;
-            mouse_left_s2   <= mouse_left_s1;
-            mouse_middle_s1 <= mouse_middle;
-            mouse_middle_s2 <= mouse_middle_s1;
-            mouse_right_s1  <= mouse_right;
-            mouse_right_s2  <= mouse_right_s1;
-        end
+        if (!rst_n) mouse_left_prev <= 1'b0;
+        else mouse_left_prev <= mouse_left;
     end
+    
 
     MouseCtl #(
-        .SYSCLK_FREQUENCY_HZ(100000000),
+        .SYSCLK_FREQUENCY_HZ(65000000),
         .CHECK_PERIOD_MS(500),
         .TIMEOUT_PERIOD_MS(100)
     ) u_MouseCtl (
-        .clk(clk100MHz),      
+        .clk(clk),      
         .rst(!rst_n), 
         .xpos(x_mouse),       
         .ypos(y_mouse),       
@@ -261,8 +244,8 @@ module TopVga(
         .clk(clk),
         .rst_n(rst_n),
         .MouseLeftClick(mouse_click_pulse), 
-        .X_POS(x_s2),                       
-        .Y_POS(y_s2),  
+        .X_POS(x_mouse),                       
+        .Y_POS(y_mouse),  
         .ram_addr_read(vga_addr_read),
         .ram_train_id(vga_train_id),
         .ram_arr_time(vga_arr_time),
@@ -274,8 +257,8 @@ module TopVga(
     DrawMouse u_DrawMouse(
         .clk(clk),
         .rst_n(rst_n),
-        .X_POS(x_s2),        
-        .Y_POS(y_s2),        
+        .X_POS(x_mouse),        
+        .Y_POS(y_mouse),        
         .vga_in(vga_rozk), 
         .vga_out(vga_mouse)
     );
@@ -363,10 +346,10 @@ module TopVga(
 
     
    
-    Turnout #(.TURNOUT_ID(0)) u_Turnout_L1 (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_click_pulse), .X_POS(x_s2), .Y_POS(y_s2), .route_locked(fsm_lock[0]),  .move_R(1'b1), .move_L(1'b1), .train_tick(train_tick_pulse), .track_R_taken(track_taken[turnout_pos[0]+1]), .track_L_taken(track_taken[0]), .train_id_in_L((signals[0] == 2'b01) ? track_train_id[0] : 8'd0),  .train_id_in_R(train_to_turnout_L1), .current_train_id(turnout_train_id[0]), .position(turnout_pos[0]), .isTaken(turnout_taken[0]));
-    Turnout #(.TURNOUT_ID(1)) u_Turnout_L2 (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_click_pulse), .X_POS(x_s2), .Y_POS(y_s2), .route_locked(fsm_lock[1]),  .move_R(1'b1), .move_L(1'b1), .train_tick(train_tick_pulse), .track_R_taken(track_taken[turnout_pos[1]+1]), .track_L_taken(track_taken[1]), .train_id_in_L((signals[1] == 2'b01) ? track_train_id[1] : 8'd0),  .train_id_in_R(train_to_turnout_L2), .current_train_id(turnout_train_id[1]), .position(turnout_pos[1]), .isTaken(turnout_taken[1]));
-    Turnout #(.TURNOUT_ID(2)) u_Turnout_P1 (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_click_pulse), .X_POS(x_s2), .Y_POS(y_s2), .route_locked(fsm_lock[14]), .move_R(1'b1), .move_L(1'b1), .train_tick(train_tick_pulse), .track_R_taken(track_taken[8]),                 .track_L_taken(track_taken[turnout_pos[2]+1]), .train_id_in_L(train_to_turnout_P1), .train_id_in_R((signals[14] == 2'b01) ? track_train_id[8] : 8'd0), .current_train_id(turnout_train_id[2]), .position(turnout_pos[2]), .isTaken(turnout_taken[2]));
-    Turnout #(.TURNOUT_ID(3)) u_Turnout_P2 (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_click_pulse), .X_POS(x_s2), .Y_POS(y_s2), .route_locked(fsm_lock[15]), .move_R(1'b1), .move_L(1'b1), .train_tick(train_tick_pulse), .track_R_taken(track_taken[9]),                 .track_L_taken(track_taken[turnout_pos[3]+1]), .train_id_in_L(train_to_turnout_P2), .train_id_in_R((signals[15] == 2'b01) ? track_train_id[9] : 8'd0), .current_train_id(turnout_train_id[3]), .position(turnout_pos[3]), .isTaken(turnout_taken[3]));
+    Turnout #(.TURNOUT_ID(0)) u_Turnout_L1 (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_click_pulse), .X_POS(x_mouse), .Y_POS(y_mouse), .route_locked(fsm_lock[0]),  .move_R(1'b1), .move_L(1'b1), .train_tick(train_tick_pulse), .track_R_taken(track_taken[turnout_pos[0]+1]), .track_L_taken(track_taken[0]), .train_id_in_L((signals[0] == 2'b01) ? track_train_id[0] : 8'd0),  .train_id_in_R(train_to_turnout_L1), .current_train_id(turnout_train_id[0]), .position(turnout_pos[0]), .isTaken(turnout_taken[0]));
+    Turnout #(.TURNOUT_ID(1)) u_Turnout_L2 (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_click_pulse), .X_POS(x_mouse), .Y_POS(y_mouse), .route_locked(fsm_lock[1]),  .move_R(1'b1), .move_L(1'b1), .train_tick(train_tick_pulse), .track_R_taken(track_taken[turnout_pos[1]+1]), .track_L_taken(track_taken[1]), .train_id_in_L((signals[1] == 2'b01) ? track_train_id[1] : 8'd0),  .train_id_in_R(train_to_turnout_L2), .current_train_id(turnout_train_id[1]), .position(turnout_pos[1]), .isTaken(turnout_taken[1]));
+    Turnout #(.TURNOUT_ID(2)) u_Turnout_P1 (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_click_pulse), .X_POS(x_mouse), .Y_POS(y_mouse), .route_locked(fsm_lock[14]), .move_R(1'b1), .move_L(1'b1), .train_tick(train_tick_pulse), .track_R_taken(track_taken[8]),                 .track_L_taken(track_taken[turnout_pos[2]+1]), .train_id_in_L(train_to_turnout_P1), .train_id_in_R((signals[14] == 2'b01) ? track_train_id[8] : 8'd0), .current_train_id(turnout_train_id[2]), .position(turnout_pos[2]), .isTaken(turnout_taken[2]));
+    Turnout #(.TURNOUT_ID(3)) u_Turnout_P2 (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_click_pulse), .X_POS(x_mouse), .Y_POS(y_mouse), .route_locked(fsm_lock[15]), .move_R(1'b1), .move_L(1'b1), .train_tick(train_tick_pulse), .track_R_taken(track_taken[9]),                 .track_L_taken(track_taken[turnout_pos[3]+1]), .train_id_in_L(train_to_turnout_P2), .train_id_in_R((signals[15] == 2'b01) ? track_train_id[9] : 8'd0), .current_train_id(turnout_train_id[3]), .position(turnout_pos[3]), .isTaken(turnout_taken[3]));
 
     Track u_Track_0 (.clk(clk), .rst_n(rst_n), .train_tick(train_tick_pulse), .move_R(signals[0] == 2'b01),  .move_L(1'b0),                 .track_R_taken(turnout_taken[0]),               .track_L_taken(1'b0),                            .train_id_in_L(spawned_train_id),       .train_id_in_R(8'd0),                  .current_train_id(track_train_id[0]), .isTaken(track_taken[0]));
     Track u_Track_1 (.clk(clk), .rst_n(rst_n), .train_tick(train_tick_pulse), .move_R(signals[1] == 2'b01),  .move_L(1'b0),                 .track_R_taken(turnout_taken[1]),               .track_L_taken(1'b0),                            .train_id_in_L(8'd0),                   .train_id_in_R(8'd0),                  .current_train_id(track_train_id[1]), .isTaken(track_taken[1]));
@@ -401,22 +384,22 @@ module TopVga(
         .current_train_id(track_train_id[9]), .isTaken(track_taken[9])
     );
 
-    Semafor #(.SEMAFOR_ID(0))  u_Sem_0  (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left_s2), .X_POS(x_s2), .Y_POS(y_s2), .color_from_fsm(signals[0]),  .route_req_out(req_sem[0]),  .OutSignal());
-    Semafor #(.SEMAFOR_ID(1))  u_Sem_1  (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left_s2), .X_POS(x_s2), .Y_POS(y_s2), .color_from_fsm(signals[1]),  .route_req_out(req_sem[1]),  .OutSignal());
-    Semafor #(.SEMAFOR_ID(2))  u_Sem_2  (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left_s2), .X_POS(x_s2), .Y_POS(y_s2), .color_from_fsm(signals[2]),  .route_req_out(req_sem[2]),  .OutSignal());
-    Semafor #(.SEMAFOR_ID(3))  u_Sem_3  (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left_s2), .X_POS(x_s2), .Y_POS(y_s2), .color_from_fsm(signals[3]),  .route_req_out(req_sem[3]),  .OutSignal());
-    Semafor #(.SEMAFOR_ID(4))  u_Sem_4  (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left_s2), .X_POS(x_s2), .Y_POS(y_s2), .color_from_fsm(signals[4]),  .route_req_out(req_sem[4]),  .OutSignal());
-    Semafor #(.SEMAFOR_ID(5))  u_Sem_5  (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left_s2), .X_POS(x_s2), .Y_POS(y_s2), .color_from_fsm(signals[5]),  .route_req_out(req_sem[5]),  .OutSignal());
-    Semafor #(.SEMAFOR_ID(6))  u_Sem_6  (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left_s2), .X_POS(x_s2), .Y_POS(y_s2), .color_from_fsm(signals[6]),  .route_req_out(req_sem[6]),  .OutSignal());
-    Semafor #(.SEMAFOR_ID(7))  u_Sem_7  (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left_s2), .X_POS(x_s2), .Y_POS(y_s2), .color_from_fsm(signals[7]),  .route_req_out(req_sem[7]),  .OutSignal());
-    Semafor #(.SEMAFOR_ID(8))  u_Sem_8  (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left_s2), .X_POS(x_s2), .Y_POS(y_s2), .color_from_fsm(signals[8]),  .route_req_out(req_sem[8]),  .OutSignal());
-    Semafor #(.SEMAFOR_ID(9))  u_Sem_9  (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left_s2), .X_POS(x_s2), .Y_POS(y_s2), .color_from_fsm(signals[9]),  .route_req_out(req_sem[9]),  .OutSignal());
-    Semafor #(.SEMAFOR_ID(10)) u_Sem_10 (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left_s2), .X_POS(x_s2), .Y_POS(y_s2), .color_from_fsm(signals[10]), .route_req_out(req_sem[10]), .OutSignal());
-    Semafor #(.SEMAFOR_ID(11)) u_Sem_11 (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left_s2), .X_POS(x_s2), .Y_POS(y_s2), .color_from_fsm(signals[11]), .route_req_out(req_sem[11]), .OutSignal());
-    Semafor #(.SEMAFOR_ID(12)) u_Sem_12 (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left_s2), .X_POS(x_s2), .Y_POS(y_s2), .color_from_fsm(signals[12]), .route_req_out(req_sem[12]), .OutSignal());
-    Semafor #(.SEMAFOR_ID(13)) u_Sem_13 (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left_s2), .X_POS(x_s2), .Y_POS(y_s2), .color_from_fsm(signals[13]), .route_req_out(req_sem[13]), .OutSignal());
-    Semafor #(.SEMAFOR_ID(14)) u_Sem_14 (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left_s2), .X_POS(x_s2), .Y_POS(y_s2), .color_from_fsm(signals[14]), .route_req_out(req_sem[14]), .OutSignal());
-    Semafor #(.SEMAFOR_ID(15)) u_Sem_15 (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left_s2), .X_POS(x_s2), .Y_POS(y_s2), .color_from_fsm(signals[15]), .route_req_out(req_sem[15]), .OutSignal());
+    Semafor #(.SEMAFOR_ID(0))  u_Sem_0  (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left), .X_POS(x_mouse), .Y_POS(y_mouse), .color_from_fsm(signals[0]),  .route_req_out(req_sem[0]),  .OutSignal());
+    Semafor #(.SEMAFOR_ID(1))  u_Sem_1  (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left), .X_POS(x_mouse), .Y_POS(y_mouse), .color_from_fsm(signals[1]),  .route_req_out(req_sem[1]),  .OutSignal());
+    Semafor #(.SEMAFOR_ID(2))  u_Sem_2  (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left), .X_POS(x_mouse), .Y_POS(y_mouse), .color_from_fsm(signals[2]),  .route_req_out(req_sem[2]),  .OutSignal());
+    Semafor #(.SEMAFOR_ID(3))  u_Sem_3  (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left), .X_POS(x_mouse), .Y_POS(y_mouse), .color_from_fsm(signals[3]),  .route_req_out(req_sem[3]),  .OutSignal());
+    Semafor #(.SEMAFOR_ID(4))  u_Sem_4  (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left), .X_POS(x_mouse), .Y_POS(y_mouse), .color_from_fsm(signals[4]),  .route_req_out(req_sem[4]),  .OutSignal());
+    Semafor #(.SEMAFOR_ID(5))  u_Sem_5  (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left), .X_POS(x_mouse), .Y_POS(y_mouse), .color_from_fsm(signals[5]),  .route_req_out(req_sem[5]),  .OutSignal());
+    Semafor #(.SEMAFOR_ID(6))  u_Sem_6  (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left), .X_POS(x_mouse), .Y_POS(y_mouse), .color_from_fsm(signals[6]),  .route_req_out(req_sem[6]),  .OutSignal());
+    Semafor #(.SEMAFOR_ID(7))  u_Sem_7  (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left), .X_POS(x_mouse), .Y_POS(y_mouse), .color_from_fsm(signals[7]),  .route_req_out(req_sem[7]),  .OutSignal());
+    Semafor #(.SEMAFOR_ID(8))  u_Sem_8  (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left), .X_POS(x_mouse), .Y_POS(y_mouse), .color_from_fsm(signals[8]),  .route_req_out(req_sem[8]),  .OutSignal());
+    Semafor #(.SEMAFOR_ID(9))  u_Sem_9  (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left), .X_POS(x_mouse), .Y_POS(y_mouse), .color_from_fsm(signals[9]),  .route_req_out(req_sem[9]),  .OutSignal());
+    Semafor #(.SEMAFOR_ID(10)) u_Sem_10 (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left), .X_POS(x_mouse), .Y_POS(y_mouse), .color_from_fsm(signals[10]), .route_req_out(req_sem[10]), .OutSignal());
+    Semafor #(.SEMAFOR_ID(11)) u_Sem_11 (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left), .X_POS(x_mouse), .Y_POS(y_mouse), .color_from_fsm(signals[11]), .route_req_out(req_sem[11]), .OutSignal());
+    Semafor #(.SEMAFOR_ID(12)) u_Sem_12 (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left), .X_POS(x_mouse), .Y_POS(y_mouse), .color_from_fsm(signals[12]), .route_req_out(req_sem[12]), .OutSignal());
+    Semafor #(.SEMAFOR_ID(13)) u_Sem_13 (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left), .X_POS(x_mouse), .Y_POS(y_mouse), .color_from_fsm(signals[13]), .route_req_out(req_sem[13]), .OutSignal());
+    Semafor #(.SEMAFOR_ID(14)) u_Sem_14 (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left), .X_POS(x_mouse), .Y_POS(y_mouse), .color_from_fsm(signals[14]), .route_req_out(req_sem[14]), .OutSignal());
+    Semafor #(.SEMAFOR_ID(15)) u_Sem_15 (.clk(clk), .rst_n(rst_n), .MouseLeftClick(mouse_left), .X_POS(x_mouse), .Y_POS(y_mouse), .color_from_fsm(signals[15]), .route_req_out(req_sem[15]), .OutSignal());
 
     RouteFSM u_FSM_0  (.clk(clk), .rst_n(rst_n), .route_req(req_sem[0]),  .target_track_taken(fsm_target[0]),            .train_passed(!track_taken[0] && !turnout_taken[0]), .route_locked(fsm_lock[0]),  .semafor_sig(signals[0]),  .train_spawn_ack(fsm_ack[0]));
     RouteFSM u_FSM_1  (.clk(clk), .rst_n(rst_n), .route_req(req_sem[1]),  .target_track_taken(fsm_target[1]),            .train_passed(!track_taken[1] && !turnout_taken[1]), .route_locked(fsm_lock[1]),  .semafor_sig(signals[1]),  .train_spawn_ack(fsm_ack[1]));
